@@ -288,7 +288,7 @@
                     <div class="col-md-4">
                       <div class="text-center pt-2 pb-2 pointer" @click="commentShow(i)">
                         <i class="far fa-comments" />
-                        <span style="matgin-top:-12px">{{ meme.comments }}</span>
+                        <span style="matgin-top:-12px">{{ i == 0?(meme.comments-1):meme.comments }}</span>
                       </div>
                     </div>
                     <div class="col-md-4">

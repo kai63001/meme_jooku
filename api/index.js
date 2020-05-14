@@ -185,6 +185,12 @@ app.get('/unlike/:p_id', requireJWTAuth, (req, res) => {
   })
 })
 
+app.get('/comment/:p_id', (req, res) => {
+  con.query('SELECT c_id,c_mid,c_comment,m_id,m_name,m_image FROM comment LEFT JOIN members m on m.m_id = comment.c_mid WHERE c_pid = ? ', [req.params.p_id], (_err, reqer) => {
+    res.send(reqer)
+  })
+})
+
 module.exports = {
   path: '/api/',
   handler: app
