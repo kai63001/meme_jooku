@@ -138,9 +138,8 @@ app.get('/main', (req, res) => {
     if (err) {
       res.send('/404')
     } else {
-      con.query('SELECT posts.p_id,posts.p_detail,posts.p_image,posts.p_lang,posts.p_hashtag,posts.p_date,m.m_id,m.m_name,m.m_image,COUNT(likes.l_id) as likes,GROUP_CONCAT(m2.m_id separator \',\') as liked,false as commentsShow,COUNT(c.c_id) as comments FROM posts ' +
+      con.query('SELECT posts.p_id,posts.p_detail,posts.p_image,posts.p_lang,posts.p_hashtag,posts.p_date,m.m_id,m.m_name,m.m_image,COUNT(likes.l_id) as likes,GROUP_CONCAT(m2.m_id separator \',\') as liked,false as commentsShow, (SELECT COUNT(*) FROM comment WHERE c_pid = posts.p_id) as comments FROM posts ' +
       'LEFT JOIN likes on likes.l_pid = posts.p_id ' +
-      'LEFT JOIN comment c on c.c_pid = posts.p_id ' +
       'LEFT JOIN members m2 on likes.l_mid = m2.m_id ' +
       'INNER JOIN members m on posts.p_mid = m.m_id GROUP BY posts.p_id ' +
       'ORDER BY p_date DESC limit ? , ? ', [start, perpage], function (err, resquert) {
@@ -174,7 +173,7 @@ app.get('/like/:p_id', requireJWTAuth, (req, res) => {
   })
 })
 
-app.get('/unlike/:p_id', requireJWTAuth, (req, res) => {
+app.delete('/unlike/:p_id', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
   con.query('DELETE FROM likes WHERE l_pid = ? AND l_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
@@ -186,9 +185,28 @@ app.get('/unlike/:p_id', requireJWTAuth, (req, res) => {
 })
 
 app.get('/comment/:p_id', (req, res) => {
-  con.query('SELECT c_id,c_mid,c_comment,m_id,m_name,m_image FROM comment LEFT JOIN members m on m.m_id = comment.c_mid WHERE c_pid = ? ', [req.params.p_id], (_err, reqer) => {
+  con.query('SELECT c_id,c_mid,c_comment,c_image,m_id,m_name,m_image FROM comment LEFT JOIN members m on m.m_id = comment.c_mid WHERE c_pid = ? ORDER BY c_date DESC', [req.params.p_id], (_err, reqer) => {
     res.send(reqer)
   })
+})
+
+app.post('/addcomment', requireJWTAuth, (req, res) => {
+  const usertoken = req.headers.authorization
+  const decoded = jwt.decode(usertoken, SECRET)
+  if (req.body.image !== '') {
+    cloudinary.uploader.upload(req.body.image, function (_error, result) {
+      console.log(result.url)
+      con.query('INSERT INTO comment (c_pid,c_mid,c_comment,c_image,c_date) VALUES (?,?,?,?,?)', [req.body.c_pid, decoded.id, req.body.c_comment, result.url, Date.now()], (_err, reqer) => {
+        console.log(_err)
+        res.send(reqer)
+      })
+    })
+  } else {
+    con.query('INSERT INTO comment (c_pid,c_mid,c_comment,c_image,c_date) VALUES (?,?,?,?,?)', [req.body.c_pid, decoded.id, req.body.c_comment, req.body.image, Date.now()], (_err, reqer) => {
+      console.log(_err)
+      res.send(reqer)
+    })
+  }
 })
 
 module.exports = {

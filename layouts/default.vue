@@ -21,14 +21,29 @@ body {
   color: #dddd;
 }
 .bg-white {
-  background:white;
+  background: white;
   width: 100%;
 }
 .color-white {
-  color:white;
+  color: white;
 }
 .bg-main {
   background: #00a8e8;
-  color:white;
+  color: white;
+}
+.image-avatar {
+  width: 100%;
+}
+@media only screen and (width: 1920px) {
+  .image-avatar {
+    width: 70% !important;
+    margin-left: 15px !important;
+  }
+}
+@media only screen and (width: 1600px) {
+  .image-avatar {
+    width: 70% !important;
+    margin-left: 15px !important;
+  }
 }
 </style>

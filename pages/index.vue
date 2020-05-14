@@ -225,7 +225,7 @@
                         <img
                           v-lazy-load
                           :data-src="meme.m_image"
-                          class="rounded-circle"
+                          class="rounded-circle image-avatar"
                           width="100%"
                           alt=""
                         >
@@ -269,7 +269,7 @@
                 >
                 <div class="p-3">
                   <div class="row">
-                    <div v-if="$auth.loggedIn" class="col-md-4">
+                    <div v-if="$auth.loggedIn" class="col-md-4 col-4">
                       <div v-show="meme.liked != null && meme.liked.includes($auth.user.m_id)" class="text-center pt-2 pb-2 pointer color-main" @click="unlike(meme.p_id,i)">
                         <i class="fas fa-laugh-squint " style="font-size:17px;" />
                         <span style="matgin-top:-12px">{{ meme.likes }}</span>
@@ -279,26 +279,26 @@
                         <span style="matgin-top:-12px">{{ meme.likes }}</span>
                       </div>
                     </div>
-                    <div v-else class="col-md-4">
+                    <div v-else class="col-md-4 col-4">
                       <div class="text-center pt-2 pb-2 pointer">
                         <i class="far fa-laugh-squint" style="font-size:17px" />
                         <span style="matgin-top:-12px">{{ meme.likes }}</span>
                       </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-4">
                       <div class="text-center pt-2 pb-2 pointer" @click="commentShow(i)">
                         <i class="far fa-comments" />
-                        <span style="matgin-top:-12px">{{ i == 0?(meme.comments-1):meme.comments }}</span>
+                        <span style="matgin-top:-12px">{{ meme.comments }}</span>
                       </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-4">
                       <div class="text-center pt-2 pb-2 pointer">
                         <i class="far fa-share-square" />
                         <span style="matgin-top:-12px" />
                       </div>
                     </div>
                   </div>
-                  <comments v-if="meme.commentsShow == 1" :msg="meme.p_id" />
+                  <comments v-if="meme.commentsShow == 1" :msg="meme.p_id" :index="i" @onCommentPost="onCommentPost" />
                 </div>
               </div>
             </div>
@@ -502,6 +502,10 @@ export default {
   created () {
   },
   methods: {
+    onCommentPost (i) {
+      console.log(i)
+      this.$set(this.memeData[i], 'comments', (this.memeData[i].comments || 0) + 1)
+    },
     async unlike (id, index) {
       // eslint-disable-next-line camelcase
       let liked = this.memeData[index].liked
@@ -522,7 +526,7 @@ export default {
         this.$set(this.memeData[index], 'likes', (this.memeData[index].likes || 0) - 1)
         this.$set(this.memeData[index], 'liked', liked)
       }
-      await this.$axios.get(`/unlike/${id}`).then((res) => {
+      await this.$axios.delete(`/unlike/${id}`).then((res) => {
         console.log(res.data)
       }).catch((e) => { console.log(e) })
     },
@@ -613,7 +617,11 @@ export default {
             p_date: '1589395601190',
             m_id: this.$auth.user.m_id,
             m_name: this.$auth.user.m_name,
-            m_image: this.$auth.user.m_image
+            m_image: this.$auth.user.m_image,
+            likes: 0,
+            liked: null,
+            commentsShow: 0,
+            comments: 0
           })
           this.post.title = ''
           this.post.lang = 'english'
