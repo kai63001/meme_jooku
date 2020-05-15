@@ -438,13 +438,13 @@
               />
               <div class="float-left w-50 mt-2">
                 <select v-model="post.lang" class="form-control input-modal ">
-                  <option :value="post.lang" selected>
+                  <option value="English">
                     English
                   </option>
-                  <option :value="post.lang = 'thai'">
+                  <option value="Thai">
                     Thai
                   </option>
-                  <option :value="post.lang = 'french'">
+                  <option value="French">
                     French
                   </option>
                 </select>
@@ -484,7 +484,7 @@ export default {
       hashtag: []
     }
   },
-  async created () {
+  async mounted () {
     const datahash = await this.$axios.get('/main/hashtag')
     this.hashtag = datahash.data
   },
