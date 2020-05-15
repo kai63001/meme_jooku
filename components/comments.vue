@@ -5,7 +5,7 @@
         <form class="row" autocomplete="off" @submit.prevent="sendMeme">
           <div class="col-md-11 col-11">
             <div class="row">
-              <div class="col-md-2 col-2">
+              <div class="col-md-2 col-3">
                 <div class="pl-2">
                   <img
                     v-lazy-load
@@ -15,7 +15,7 @@
                   >
                 </div>
               </div>
-              <div class="col-md-10 col-10 pl-0">
+              <div class="col-md-10 col-9 pl-0">
                 <span class="color-main"> {{ $auth.user.m_name }}</span>
                 <div class="row">
                   <div class="col-md-12">
@@ -29,7 +29,7 @@
                     >
                     <div
                       class="position-absolute pointer"
-                      style="top:20%;right:6%"
+                      style="top:20%;right:7%"
                       data-toggle="tooltip"
                       data-placement="top"
                       title="Attach a picture"
@@ -46,7 +46,7 @@
                   </div>
                 </div>
                 <div v-if="image != ''">
-                  <img v-lazy-load :data-src="image" width="100%" alt="">
+                  <img v-lazy-load :data-src="image" class="rounded mt-2" width="100%" alt="">
                 </div>
               </div>
             </div>
@@ -62,7 +62,7 @@
         <div v-for="(c, i) in comments" :key="i" class="row mt-2">
           <div class="col-md-11 col-11">
             <div class="row">
-              <div class="col-md-2 col-2">
+              <div class="col-md-2 col-3">
                 <div class="pl-2">
                   <img
                     v-lazy-load
@@ -73,14 +73,14 @@
                   >
                 </div>
               </div>
-              <div class="col-md-10 col-10 pl-0">
-                <div :class="{'comment':c.c_image == '','comment2':c.c_image != ''}">
+              <div class="col-md-10 col-9 pl-0">
+                <div class="comment">
                   <span class="color-main"> {{ c.m_name }}</span>
                   <br>
                   {{ c.c_comment }}
                 </div>
                 <div v-if="c.c_image != ''">
-                  <img v-lazy-load :data-src="c.c_image" class="image-comment2" width="100%" :alt="c.c_comment">
+                  <img v-lazy-load :data-src="c.c_image" class="rounded mt-2" width="100%" :alt="c.c_comment">
                 </div>
               </div>
             </div>

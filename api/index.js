@@ -100,6 +100,19 @@ app.post('/post', requireJWTAuth, (req, res) => {
   console.log(hashtag)
   if (hashtag !== null && hashtag.length > 0) {
     des = des.replace(/#[A-Za-z0-9]*/g, '').trim()
+    hashtag.forEach((h) => {
+      con.query('SELECT * FROM hashtag WHERE h_name = ?', [h], (_err, reqer1) => {
+        if (reqer1.length === 0) {
+          con.query('INSERT INTO hashtag (h_name) VALUES (?)', [h], (_err, reqer2) => {
+            console.log('insert hashtag')
+          })
+        } else {
+          con.query('UPDATE hashtag SET h_count = ? WHERE h_id = ?', [reqer1[0].h_count + 1, reqer1[0].h_id], (_err, reqer3) => {
+            console.log('UPDATE HASHTAG')
+          })
+        }
+      })
+    })
     hashtag = hashtag.join(',')
     hashtag = hashtag.replace(/#/g, '')
   } else {
@@ -123,6 +136,12 @@ app.post('/post', requireJWTAuth, (req, res) => {
       res.send({ reqer, title: des, hashtag })
     })
   }
+})
+
+app.get('/main/hashtag', (req, res) => {
+  con.query('SELECT * FROM hashtag LIMIT 5', (_err, reqer) => {
+    res.send(reqer)
+  })
 })
 
 app.get('/main', (req, res) => {

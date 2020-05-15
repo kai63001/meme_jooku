@@ -235,7 +235,7 @@
                           class="lend"
                         ><strong>{{ meme.m_name }}</strong></span>
                         <br>
-                        <span class="text-muted">5m ·</span>
+                        <span class="text-muted">{{ $moment(parseInt(meme.p_date)) }} ·</span>
                         <nuxt-link
                           to=""
                           class="text-decoration-none color-main"
@@ -255,8 +255,8 @@
                     <span style="white-space: pre-line;">{{ meme.p_detail }}</span>
                   </div>
                   <div v-if="meme.p_hashtag.length > 0">
-                    <nuxt-link v-for="(hashtag,index) in meme.p_hashtag.split(',')" :key="index" class="color-main" to="">
-                      {{ `#${hashtag}` }}
+                    <nuxt-link v-for="(hashtagH,index) in meme.p_hashtag.split(',')" :key="index" class="color-main" to="">
+                      {{ `#${hashtagH}` }}
                     </nuxt-link>
                   </div>
                 </div>
@@ -318,28 +318,12 @@
               <div class="pl-2 pt-3 border-bottom">
                 <h4>Trends for you</h4>
               </div>
-              <nuxt-link to="" class="text-decoration-none text-dark">
+              <nuxt-link v-for="(h,index) in hashtag" :key="index" to="" class="text-decoration-none text-dark">
                 <div class="p-3  border-bottom">
                   <div class="color-main">
-                    #555
+                    {{ h.h_name }}
                   </div>
-                  <span>21K Hashtags</span>
-                </div>
-              </nuxt-link>
-              <nuxt-link to="" class="text-decoration-none text-dark">
-                <div class="p-3  border-bottom">
-                  <div class="color-main">
-                    #haha
-                  </div>
-                  <span>11K Hashtags</span>
-                </div>
-              </nuxt-link>
-              <nuxt-link to="" class="text-decoration-none text-dark">
-                <div class="p-3  border-bottom">
-                  <div class="color-main">
-                    #gamer
-                  </div>
-                  <span>9K Hashtags</span>
+                  <span>{{ h.h_count+1 }} Hashtags</span>
                 </div>
               </nuxt-link>
               <nuxt-link to="" class="color-main text-decoration-none">
@@ -496,10 +480,14 @@ export default {
       },
       setLater: false,
       memeData: [],
-      page: 1
+      page: 1,
+      hashtag: []
     }
   },
-  created () {
+  async created () {
+    const datahash = await this.$axios.get('/main/hashtag')
+    this.hashtag = datahash.data
+    console.log(this.hashtag)
   },
   methods: {
     onCommentPost (i) {
@@ -531,7 +519,7 @@ export default {
       }).catch((e) => { console.log(e) })
     },
     commentShow (index) {
-      this.$set(this.memeData[index], 'commentsShow', 1)
+      this.$set(this.memeData[index], 'commentsShow', !this.memeData[index].commentsShow)
     },
     async like (id, index) {
       this.$set(this.memeData[index], 'likes', (this.memeData[index].likes || 0) + 1)

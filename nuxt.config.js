@@ -55,7 +55,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    { src: '~/plugins/infinitloading', ssr: false }
+    { src: '~/plugins/infinitloading', ssr: false },
+    '~/plugins/moment.js'
     // { src: '~/plugins/grid', ssr: false },
     // { src: '~/plugins/modal' }
 
