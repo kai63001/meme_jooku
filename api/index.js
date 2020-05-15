@@ -123,14 +123,12 @@ app.post('/post', requireJWTAuth, (req, res) => {
 
   if (req.body.image !== '' && req.body.imageUrl === false) {
     cloudinary.uploader.upload(req.body.image, function (_error, result) {
-      console.log(result.url)
       con.query('INSERT INTO posts (p_detail,p_image,p_lang,p_hashtag,p_date,p_mid) VALUES (?,?,?,?,?,?)', [des, result.url, req.body.lang, hashtag, Date.now(), decoded.id], (_err, reqer) => {
         if (_err) { throw _err }
         res.send({ reqer, title: des, hashtag })
       })
     })
   } else {
-    console.log(req.body.image)
     con.query('INSERT INTO posts (p_detail,p_image,p_lang,p_hashtag,p_date,p_mid) VALUES (?,?,?,?,?,?)', [des, req.body.image, req.body.lang, hashtag, Date.now(), decoded.id], (_err, reqer) => {
       if (_err) { throw _err }
       res.send({ reqer, title: des, hashtag })
@@ -139,7 +137,7 @@ app.post('/post', requireJWTAuth, (req, res) => {
 })
 
 app.get('/main/hashtag', (req, res) => {
-  con.query('SELECT * FROM hashtag LIMIT 5', (_err, reqer) => {
+  con.query('SELECT * FROM hashtag ORDER BY h_count DESC LIMIT 5', (_err, reqer) => {
     res.send(reqer)
   })
 })

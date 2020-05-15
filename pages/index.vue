@@ -441,10 +441,10 @@
                   <option :value="post.lang" selected>
                     English
                   </option>
-                  <option value="thai">
+                  <option :value="post.lang = 'thai'">
                     Thai
                   </option>
-                  <option value="french">
+                  <option :value="post.lang = 'french'">
                     French
                   </option>
                 </select>
@@ -487,7 +487,6 @@ export default {
   async created () {
     const datahash = await this.$axios.get('/main/hashtag')
     this.hashtag = datahash.data
-    console.log(this.hashtag)
   },
   methods: {
     onCommentPost (i) {

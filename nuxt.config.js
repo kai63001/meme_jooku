@@ -101,7 +101,7 @@ module.exports = {
       directiveOnly: false,
 
       // Default image must be in the static folder
-      defaultImage: '~/assets/images/cover.jpg',
+      defaultImage: '/cover2.jpg',
 
       // To remove class set value to false
       loadingClass: 'isLoading',
