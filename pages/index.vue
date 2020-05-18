@@ -216,6 +216,82 @@
             <div class="clearfix" />
           </div>
           <div class="row">
+            <div class="col-md-12 item">
+              <div class="card-feed bg-white shadow-sm rounded">
+                <div class="p-3">
+                  <div class="row">
+                    <div class="col-md-2 col-3">
+                      <div class="pr-3">
+                        <img
+                          v-lazy-load
+                          :data-src="$auth.user.m_image"
+                          class="rounded-circle image-avatar"
+                          alt=""
+                        >
+                      </div>
+                    </div>
+                    <div class="col-md-10 col-9 pl-0 pl-text">
+                      <form @submit.prevent="addPost">
+                        <textarea
+                          id=""
+                          v-model="post.title"
+                          class="form-control input-modal"
+                          name=""
+                          cols="10"
+                          placeholder="Give your post title or description (drag drop image here)"
+                          rows="3"
+                          @drop.prevent="onFileChange"
+                          @dragover.prevent
+                        />
+                        <div
+                          class="mt-1 float-left"
+                          data-toggle="tooltip"
+                          data-placement="bottom"
+                          title="Attach a picture"
+                          style="width:20px;cursor: pointer;z-index:2"
+                        >
+                          <i class="fas fa-image font-image color-main" />
+                          <input
+                            ref="file"
+                            type="file"
+                            class="fileImage"
+                            accept="image/png, image/jpeg, image/gif"
+                            @change="onFileChange"
+                          >
+                        </div>
+                        <div
+                          class="mt-1 float-left ml-3 pointeronly"
+                          data-toggle="tooltip"
+                          data-placement="bottom"
+                          title="Attach a picture by url"
+                          @click="post.imageUrl = !post.imageUrl"
+                        >
+                          <i class="fas fa-link color-main" />
+                        </div>
+                        <div class="mt-1 float-right">
+                          <button type="submit" class="btn bg-main m-0 mt-2 pull-right float-right">
+                            Post
+                          </button>
+                        </div>
+                        <div class="clearfix" />
+                        <div v-if="post.imageUrl" class="w-50">
+                          <input v-model="post.image" type="url" class="form-control input-modal" required placeholder="image url">
+                        </div>
+                        <div v-if="post.image != '' || (isUrl(post.image) && post.imageUrl == true)">
+                          <img
+                            v-lazy-load
+                            :data-src="post.image"
+                            width="100%"
+                            class="rounded"
+                            alt=""
+                          >
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div v-for="(meme,i) in memeData" :key="i" class="col-md-12 item">
               <div class="card-feed bg-white shadow-sm rounded">
                 <div class="p-3">
@@ -365,7 +441,7 @@
         </div>
       </div>
     </div>
-    <div
+    <!-- <div
       id="post"
       ref="vuemodal"
       class="modal fade  bd-example-modal-lg"
@@ -437,7 +513,7 @@
                 placeholder="Give your post title or description"
               />
               <div class="float-left w-50 mt-2">
-                <select v-model="post.lang" class="form-control input-modal ">
+                <select v-model="post.lang" class="form-control input-modal">
                   <option value="English">
                     English
                   </option>
@@ -457,7 +533,7 @@
           </form>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -474,7 +550,7 @@ export default {
       onlyText: false,
       post: {
         title: '',
-        lang: 'english',
+        lang: 'English',
         image: '',
         imageUrl: false
       },
@@ -485,10 +561,19 @@ export default {
     }
   },
   async mounted () {
+    // eslint-disable-next-line no-undef
+    $(function () {
+      // eslint-disable-next-line no-undef
+      $('[data-toggle="tooltip"]').tooltip()
+    })
     const datahash = await this.$axios.get('/main/hashtag')
     this.hashtag = datahash.data
   },
   methods: {
+    isUrl (s) {
+      const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/
+      return regexp.test(s)
+    },
     onCommentPost (i) {
       console.log(i)
       this.$set(this.memeData[i], 'comments', (this.memeData[i].comments || 0) + 1)
@@ -549,9 +634,12 @@ export default {
       if (!files.length) {
         return
       }
-      console.log(files[0].size)
+      console.log(files[0].type)
       if (files[0].size > 800000) {
         this.$toast.error('Image size limit 800Kb').goAway(1500)
+      // eslint-disable-next-line eqeqeq
+      } else if (files[0].type != 'image/png' && files[0].type != 'image/jpeg' && files[0].type != 'image/gif') {
+        this.$toast.error('Not allowed file type (png,jpg,gif)').goAway(1500)
       } else {
         this.createImage(files[0])
       }
@@ -575,10 +663,16 @@ export default {
       reader.readAsDataURL(file)
     },
     addPost () {
+      if (this.post.image === '') {
+        this.onlyText = true
+      }
       this.$toast.show('Posting...').goAway(1500)
-      if (this.post.image === '' && this.onlyText === false) {
-        this.$toast.error('Image is empty').goAway(1500)
-      } else if (this.post.title === '' && this.onlyText === true) {
+      // if (this.post.image === '' && this.onlyText === false) {
+      //   this.$toast.error('Image is empty').goAway(1500)
+      // } else if (this.post.title === '' && this.onlyText === true) {
+      //   this.$toast.error('Title or Description is empty').goAway(1500)
+      // } else {
+      if (this.post.image === '' && this.post.title === '') {
         this.$toast.error('Title or Description is empty').goAway(1500)
       } else {
         this.$axios.post(
@@ -611,12 +705,14 @@ export default {
             comments: 0
           })
           this.post.title = ''
-          this.post.lang = 'english'
+          this.post.lang = 'English'
           this.post.image = ''
           this.post.imageUrl = false
           this.onlyText = false
         })
       }
+
+      // }
     },
     noting () {
 
@@ -659,9 +755,17 @@ export default {
   transform: translateY(-13px) scale(0.8);
 }
 .input-modal {
+  background: #f7f7f7;
   border: none;
-  background-color: #272a33;
-  color: white;
+  color: #212121;
+}
+.input-modal:focus{
+  outline:none;
+}
+
+.pl-text{
+  margin-left: -3%;
+  padding-right: 5px;
 }
 
 .image-dragdrop {
@@ -674,16 +778,16 @@ export default {
   cursor: pointer;
 }
 ::placeholder {
-  color: white !important;
-  opacity: 1; /* Firefox */
+  color: #212121 !important;
+  opacity: 0.7; /* Firefox */
 }
 
 :-ms-input-placeholder {
-  color: white !important;
+  color: #212121 !important;
 }
 
 ::-ms-input-placeholder {
-  color: white !important;
+  color: #212121 !important;
 }
 .bg-drogdrop {
   width: 100%;
@@ -697,6 +801,15 @@ export default {
   background: #3c424b;
   color: white;
 }
+.fileImage {
+  position: absolute;
+  left: 0px;
+  bottom:15px;
+  width: 30px;
+  opacity: 0;
+  cursor: pointer;
+}
+
 .exit-modal {
   font-size: 20px;
   color: white;
@@ -716,12 +829,19 @@ export default {
   color:white;
   cursor: pointer;
 }
+
+.pointeronly {
+  cursor: pointer;
+}
 .border-bottom {
   border-bottom: 1px solid #ddd;
 }
 .page-enter-active,
 .page-leave-active {
   transition: all 0.2s;
+}
+.font-image{
+  font-size: 23px;
 }
 .page-enter,
 .page-leave-active {

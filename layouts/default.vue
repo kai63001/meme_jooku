@@ -46,4 +46,7 @@ body {
     margin-left: 15px !important;
   }
 }
+select {
+    display: block
+ }
 </style>

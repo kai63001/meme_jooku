@@ -195,7 +195,7 @@ export default {
 }
 .comment {
   width: 100%;
-  background: #ededed;
+  background: #f7f7f7;
   color: #212121;
   padding: 5px 20px;
   border-radius: 4px;
@@ -203,7 +203,7 @@ export default {
 
 .comment2 {
   width: 100%;
-  background: #ededed;
+  background: #f7f7f7;
   color: #212121;
   padding: 5px 20px;
   border-radius: 4px 4px 0px 0px;
@@ -213,13 +213,13 @@ export default {
 
 }
 .input-comment {
-  background: #ededed;
+  background: #f7f7f7;
   border: none;
   padding: 5px 20px;
 }
 ::placeholder {
   color: #212121 !important;
-  opacity: 1; /* Firefox */
+  opacity: 0.7; /* Firefox */
 }
 
 :-ms-input-placeholder {
