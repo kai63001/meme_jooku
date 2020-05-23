@@ -7,10 +7,11 @@ const jwt = require('jwt-simple')
 const passport = require('passport')
 const ExtractJwt = require('passport-jwt').ExtractJwt
 const JwtStrategy = require('passport-jwt').Strategy
+// secret key for jwt (ความลับสุดยอด)
 const SECRET = 'shadow'
 const cloudinary = require('cloudinary').v2
 const con = require('../db/server')
-
+// auth system a
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
   secretOrKey: SECRET
@@ -26,6 +27,7 @@ app.get('/', requireJWTAuth, (req, res) => {
   const decoded = jwt.decode(usertoken, SECRET)
   res.send(decoded.username)
 })
+// get user into the jwt key
 app.get('/user', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
@@ -33,6 +35,7 @@ app.get('/user', requireJWTAuth, (req, res) => {
     res.send({ user: reqer[0] })
   })
 })
+// logout :)
 app.get('/logout', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   jwt.destroy(usertoken)
@@ -61,6 +64,7 @@ app.post('/login', loginMiddleWare, (req, res) => {
   }
   res.send({ token: jwt.encode(payload, SECRET) })
 })
+
 app.post('/register', (req, res) => {
   if (req.body.registerName === undefined) {
     res.send('name')
@@ -88,11 +92,13 @@ app.post('/register', (req, res) => {
     })
   }
 })
+// my cloud storage api key
 cloudinary.config({
   cloud_name: 'dgoffpdxx',
   api_key: '282999112639611',
   api_secret: 'KhoVhcrnN9GbmHdgHpq_jEK4NPw'
 })
+// post in index
 app.post('/post', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
@@ -137,7 +143,7 @@ app.post('/post', requireJWTAuth, (req, res) => {
     })
   }
 })
-
+// index hashtag
 app.get('/main/hashtag', (req, res) => {
   con.query('SELECT * FROM hashtag ORDER BY h_count DESC LIMIT 5', (_err, reqer) => {
     res.send(reqer)
@@ -175,7 +181,7 @@ app.get('/main', (req, res) => {
     }
   })
 })
-
+// like system
 app.get('/like/:p_id', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
@@ -191,7 +197,7 @@ app.get('/like/:p_id', requireJWTAuth, (req, res) => {
     }
   })
 })
-
+// unlike system
 app.delete('/unlike/:p_id', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
@@ -202,16 +208,38 @@ app.delete('/unlike/:p_id', requireJWTAuth, (req, res) => {
     res.send('success')
   })
 })
-
+// show comment system
 app.get('/comment/:p_id', (req, res) => {
-  con.query('SELECT c_id,c_mid,c_comment,c_image,m_id,m_name,m_image FROM comment LEFT JOIN members m on m.m_id = comment.c_mid WHERE c_pid = ? ORDER BY c_date DESC', [req.params.p_id], (_err, reqer) => {
-    res.send(reqer)
+  const perpage = 4
+  let page
+  if (req.query.page) {
+    page = req.query.page
+  } else {
+    page = 1
+  }
+  const start = (page - 1) * perpage
+  con.query('SELECT c_id FROM comment', function (err, resquerter) {
+    if (err) {
+      res.send('/404')
+    } else {
+      con.query('SELECT c_id,c_mid,c_comment,c_image,m_id,m_name,m_image FROM comment LEFT JOIN members m on m.m_id = comment.c_mid WHERE c_pid = ? ORDER BY c_date DESC limit ? , ?', [req.params.p_id, start, perpage], (_err, reqer) => {
+        if (_err) {
+          res.send(_err)
+        } else {
+          const lastPage = Math.ceil(resquerter.length / perpage)
+          res.lastPage = lastPage
+          res.count = resquerter.length
+          res.send({ lastPage, reqer })
+        }
+      })
+    }
   })
 })
-
+// add comment system
 app.post('/addcomment', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
+  // ถ้าไม่มีรูป
   if (req.body.image !== '') {
     cloudinary.uploader.upload(req.body.image, function (_error, result) {
       console.log(result.url)
@@ -221,6 +249,7 @@ app.post('/addcomment', requireJWTAuth, (req, res) => {
       })
     })
   } else {
+    // ถ้ามีรูป
     con.query('INSERT INTO comment (c_pid,c_mid,c_comment,c_image,c_date) VALUES (?,?,?,?,?)', [req.body.c_pid, decoded.id, req.body.c_comment, req.body.image, Date.now()], (_err, reqer) => {
       console.log(_err)
       res.send(reqer)
