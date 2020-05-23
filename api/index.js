@@ -29,7 +29,7 @@ app.get('/', requireJWTAuth, (req, res) => {
 app.get('/user', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
-  con.query('SELECT m_id,m_name,m_username,m_image FROM members WHERE m_id = ?', [decoded.id], (_err, reqer) => {
+  con.query('SELECT m_id,m_name,m_email,m_image FROM members WHERE m_id = ?', [decoded.id], (_err, reqer) => {
     res.send({ user: reqer[0] })
   })
 })
@@ -39,7 +39,7 @@ app.get('/logout', requireJWTAuth, (req, res) => {
   res.send('logout')
 })
 const loginMiddleWare = (req, res, next) => {
-  con.query('SELECT m_id,m_username FROM members WHERE m_username = ? AND m_password = ?', [req.body.username, req.body.password], (err, reqer) => {
+  con.query('SELECT m_id,m_email FROM members WHERE m_email = ? AND m_password = ?', [req.body.username, req.body.password], (err, reqer) => {
     console.log(req.body)
     if (err) {
       res.send('error')
@@ -69,11 +69,13 @@ app.post('/register', (req, res) => {
   } else if (req.body.registerPassword === undefined) {
     res.send('password')
   } else {
-    con.query('SELECT m_id,m_name,m_username FROM members WHERE m_username = ?', [req.body.registerEmail], (_error, reqerreg) => {
+    con.query('SELECT m_id,m_name,m_email FROM members WHERE m_email = ?;SELECT m_id FROM members WHERE m_username = ?', [req.body.registerEmail, req.body.registerUsername], (_error, reqerreg) => {
       if (_error) {
         res.send('_erroror')
-      } else if (reqerreg.length === 0) {
-        con.query('INSERT INTO members (m_name,m_username,m_password) VALUES (?,?,?)', [req.body.registerName, req.body.registerEmail, req.body.registerPassword], (_err, reqer) => {
+      } else if (reqerreg[1].length > 0) {
+        res.send('usernamesame')
+      } else if (reqerreg[0].length === 0) {
+        con.query('INSERT INTO members (m_name,m_username,m_email,m_password) VALUES (?,?,?,?)', [req.body.registerName, req.body.registerUsername, req.body.registerEmail, req.body.registerPassword], (_err, reqer) => {
           if (_err) {
             res.send('err')
           } else {
@@ -123,7 +125,7 @@ app.post('/post', requireJWTAuth, (req, res) => {
 
   if (req.body.image !== '' && req.body.imageUrl === false) {
     cloudinary.uploader.upload(req.body.image, function (_error, result) {
-      con.query('INSERT INTO posts (p_detail,p_image,p_lang,p_hashtag,p_date,p_mid) VALUES (?,?,?,?,?,?)', [des, result.url, req.body.lang, hashtag, Date.now(), decoded.id], (_err, reqer) => {
+      con.query('INSERT INTO posts (p_detail,p_image,p_lang,p_hashtag,p_date,p_mid) VALUES (?,?,?,?,?,?)', [des, result.url.replace(/http:\/\//g, 'https://'), req.body.lang, hashtag, Date.now(), decoded.id], (_err, reqer) => {
         if (_err) { throw _err }
         res.send({ reqer, title: des, hashtag })
       })

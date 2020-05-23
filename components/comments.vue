@@ -58,6 +58,16 @@
           </div>
         </form>
       </div>
+      <div v-else class="text-center">
+        <nuxt-link class="pl-1 color-main pr-1" to="/auth/login">
+          Sign in
+        </nuxt-link>
+        or
+        <nuxt-link class="pl-1 color-main" to="/auth/register">
+          Create an Account
+        </nuxt-link>
+        to leave a comment.
+      </div>
       <div v-if="comments.length > 0">
         <div v-for="(c, i) in comments" :key="i" class="row mt-2">
           <div class="col-md-11 col-11">

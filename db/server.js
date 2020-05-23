@@ -8,6 +8,14 @@ const con = mysql.createConnection({
   multipleStatements: true
 })
 
+// const con = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'moonbpez',
+//   password: '9XTI0XlmQwc2',
+//   database: 'moonbpez_jooku',
+//   multipleStatements: true
+// })
+
 con.connect((error) => {
   if (error) {
     console.log('connect error')

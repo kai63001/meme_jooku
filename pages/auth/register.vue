@@ -100,6 +100,38 @@
         <!-- <img src="/bannerright.jpg" width="100%" height="100%" alt=""> -->
       </div>
     </div>
+    <div
+      id="exampleModalCenter"
+      class="modal fade"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form @submit.prevent="registered">
+              <h4 class="text-center">
+                This username is already used
+              </h4>
+              <br>
+              <input
+                v-model="register.registerUsername"
+                name="username"
+                type="text"
+                class="form-control input-dark"
+                placeholder="Username"
+                required
+              >
+              <button type="submit" class="btn-next float-right">
+                SIGN UP
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -112,7 +144,8 @@ export default {
       register: {
         registerEmail: '',
         registerPassword: '',
-        registerName: ''
+        registerName: '',
+        registerUsername: ''
       }
     }
   },
@@ -126,6 +159,9 @@ export default {
     async registered () {
       this.$toast.show('Registering...').goAway(1500)
       try {
+        if (this.register.registerUsername === '') {
+          this.register.registerUsername = this.register.registerEmail.substr(0, this.register.registerEmail.indexOf('@'))
+        }
         const response = (await this.$axios.post('/register', this.register)).data
         console.log(response)
         if (response === 'name') {
@@ -137,8 +173,16 @@ export default {
         } else if (response === 'err') {
           this.$toast.error('Error').goAway(1500)
         } else if (response === 'match') {
-          this.$toast.error('This email is already used.').goAway(1500)
+          this.$toast.error('This email is already used').goAway(1500)
+          // eslint-disable-next-line no-undef
+          $('#exampleModalCenter').modal('hide')
+        } else if (response === 'usernamesame') {
+          this.$toast.error('This username is already used').goAway(1500)
+          // eslint-disable-next-line no-undef
+          $('#exampleModalCenter').modal('show')
         } else {
+          // eslint-disable-next-line no-undef
+          $('#exampleModalCenter').modal('hide')
           this.$router.push('/auth/login')
           this.$toast.success('Account created successfully').goAway(1500)
         }
@@ -226,6 +270,16 @@ export default {
 .right-main {
   margin-top: -25%;
   margin-left: 10%;
+}
+.btn-next {
+  margin-top: 5%;
+  background: #00a8e8 !important;
+  color: white;
+  box-shadow: none;
+  padding: 10px 30px;
+  border-radius: 50px;
+  border: none;
+  outline: none;
 }
 .btn-signin {
   background: #00a8e8 !important;

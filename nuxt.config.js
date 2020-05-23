@@ -10,6 +10,10 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'robots', content: 'index, follow, all,max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
+      { name: 'theme-color', content: '#ef476f' },
+      { 'http-equiv': 'content-type', content: 'text/html; charset=UTF-8' },
+      { 'http-equiv': 'content-language', content: 'en' },
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
@@ -46,6 +50,11 @@ module.exports = {
   ** Customize the progress-bar color
   */
   loading: { color: '#06d6a0', height: '3px' },
+  render: {
+    static: {
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+  },
   /*
   ** Global CSS
   */
@@ -72,12 +81,15 @@ module.exports = {
   ** Nuxt.js modules
   */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/device',
+    ['@nuxtjs/component-cache', {
+      max: 10000,
+      maxAge: 1000 * 60 * 60
+    }],
     '@nuxtjs/toast',
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
-    // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
     [
       'nuxt-compress',
@@ -91,7 +103,6 @@ module.exports = {
       }
     ],
     ['nuxt-lazy-load', {
-      // These are the default values
       images: true,
       videos: true,
       audios: true,
@@ -100,16 +111,11 @@ module.exports = {
       polyfill: true,
       directiveOnly: false,
 
-      // Default image must be in the static folder
       defaultImage: '/cover2.jpg',
-
-      // To remove class set value to false
       loadingClass: 'isLoading',
       loadedClass: 'isLoaded',
       appendClass: 'lazyLoad',
-
       observerConfig: {
-        // See IntersectionObserver documentation
       }
     }]
   ],
@@ -158,7 +164,25 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
-    extend (config, ctx) {
+    extend (config, { isDev, isClient }) {
+      config.module.rules.forEach((rule) => {
+        if (String(rule.test) === String(/\.(png|jpe?g|gif|svg|webp)$/)) {
+        // add a second loader when loading images
+          rule.use.push({
+            loader: 'image-webpack-loader',
+            options: {
+              svgo: {
+                plugins: [
+                // use these settings for internet explorer for proper scalable SVGs
+                // https://css-tricks.com/scale-svg/
+                  { removeViewBox: false },
+                  { removeDimensions: true }
+                ]
+              }
+            }
+          })
+        }
+      })
     }
   }
 }

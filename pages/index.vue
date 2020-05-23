@@ -23,35 +23,7 @@
         </button>
 
         <div id="navbarSupportedContent" class="collapse navbar-collapse">
-          <ul class="navbar-nav mr-auto">
-            <button
-              v-if="$auth.loggedIn"
-              class="pt-1 pb-1 shadow-sm btn btn-newpost"
-              data-toggle="modal"
-              data-target="#post"
-            >
-              <i class="fas fa-plus-square mr-1" /> New post
-            </button>
-            <!-- <li class="nav-item dropdown">
-            <a
-              id="navbarDropdown"
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Dropdown
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider" />
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li> -->
-          </ul>
+          <ul class="navbar-nav mr-auto" />
           <form class="form-inline my-2 my-lg-0">
             <div v-if="$auth.loggedIn">
               <div class="float-right  pull-right width-image-profile mr-3">
@@ -146,7 +118,7 @@
       </nav>
       <br><br>
       <div class="row">
-        <div class="col-md-3 d-none d-lg-block">
+        <div v-if="$device.isDesktop" class="col-md-3 d-none d-lg-block">
           <div class="bg-left">
             <div class="pl-3 pr-3 pt-5">
               <nuxt-link to="/">
@@ -216,7 +188,7 @@
             <div class="clearfix" />
           </div>
           <div class="row">
-            <div class="col-md-12 item">
+            <div v-if="$auth.loggedIn" class="col-md-12 item">
               <div class="card-feed bg-white shadow-sm rounded">
                 <div class="p-3">
                   <div class="row">
@@ -243,8 +215,11 @@
                           @drop.prevent="onFileChange"
                           @dragover.prevent
                         />
+                        <div v-if="post.imageUrl" class="w-50 mt-2">
+                          <input v-model="post.image" type="url" class="form-control input-modal" required placeholder="image url">
+                        </div>
                         <div
-                          class="mt-1 float-left"
+                          class="my-3 float-left"
                           data-toggle="tooltip"
                           data-placement="bottom"
                           title="Attach a picture"
@@ -260,7 +235,7 @@
                           >
                         </div>
                         <div
-                          class="mt-1 float-left ml-3 pointeronly"
+                          class="my-3 float-left ml-3 pointeronly"
                           data-toggle="tooltip"
                           data-placement="bottom"
                           title="Attach a picture by url"
@@ -269,14 +244,15 @@
                           <i class="fas fa-link color-main" />
                         </div>
                         <div class="mt-1 float-right">
-                          <button type="submit" class="btn bg-main m-0 mt-2 pull-right float-right">
+                          <button v-if="posting == false" type="submit" class="btn bg-main m-0 mt-2 pull-right float-right">
                             Post
+                          </button>
+                          <button v-else type="submit" class="btn bg-main m-0 mt-2 pull-right float-right" disabled>
+                            Posting..
                           </button>
                         </div>
                         <div class="clearfix" />
-                        <div v-if="post.imageUrl" class="w-50">
-                          <input v-model="post.image" type="url" class="form-control input-modal" required placeholder="image url">
-                        </div>
+
                         <div v-if="post.image != '' || (isUrl(post.image) && post.imageUrl == true)">
                           <img
                             v-lazy-load
@@ -322,7 +298,20 @@
                     </div>
                   </div>
                   <div class="float-right">
-                    <i class="fas fa-ellipsis-h" />
+                    <div v-if="$auth.loggedIn" class="dropdown">
+                      <div class="" data-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h pointeronly" />
+                      </div>
+                      <div v-if="meme.m_id == $auth.user.m_id" class="dropdown-menu dropdown-menu-tip-n dropdown-menu-right">
+                        <a href="#" class="dropdown-item"><i class="far fa-plus-square mr-2" /> Playlist</a>
+                        <hr class="p-0 m-2">
+                        <a href="#" class="dropdown-item"><i class="far fa-trash-alt mr-2" /> Delete</a>
+                      </div>
+                      <div v-else class="dropdown-menu dropdown-menu-tip-n dropdown-menu-right">
+                        <a href="#" class="dropdown-item"><i class="far fa-plus-square mr-2" /> Playlist</a>
+                        <a href="#" class="dropdown-item"><i class="far fa-flag mr-2" /> Report</a>
+                      </div>
+                    </div>
                   </div>
                   <div class="clearfix" />
                 </div>
@@ -356,10 +345,12 @@
                       </div>
                     </div>
                     <div v-else class="col-md-4 col-4">
-                      <div class="text-center pt-2 pb-2 pointer">
-                        <i class="far fa-laugh-squint" style="font-size:17px" />
-                        <span style="matgin-top:-12px">{{ meme.likes }}</span>
-                      </div>
+                      <nuxt-link to="/auth/login" class="pointer text-decoration-none color-dark">
+                        <div class="text-center pt-2 pb-2 pointer">
+                          <i class="far fa-laugh-squint" style="font-size:17px" />
+                          <span style="matgin-top:-12px">{{ meme.likes }}</span>
+                        </div>
+                      </nuxt-link>
                     </div>
                     <div class="col-md-4 col-4">
                       <div class="text-center pt-2 pb-2 pointer" @click="commentShow(i)">
@@ -380,13 +371,23 @@
             </div>
 
             <client-only>
-              <infinite-loading ref="InfiniteLoading" @infinite="loadMoreTours" />
+              <infinite-loading ref="InfiniteLoading" class="w-100" @infinite="loadMoreTours">
+                <div slot="spinner" class="w-100">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="bg-white text-center w-100 p-3">
+                        <i class="fas fa-circle-notch fa-spin" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </infinite-loading>
             </client-only>
             <br><br>
           </div>
           <br>
         </div>
-        <div class="col-md-3 d-none d-lg-block pr-3 bg-bg ">
+        <div v-if="$device.isDesktop" class="col-md-3 d-none d-lg-block pr-3 bg-bg ">
           <br>
           <br>
           <div class="pr-4">
@@ -441,99 +442,6 @@
         </div>
       </div>
     </div>
-    <!-- <div
-      id="post"
-      ref="vuemodal"
-      class="modal fade  bd-example-modal-lg"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="postTitle"
-      aria-hidden="true"
-    >
-      <div
-        class="modal-dialog modal-dialog-centered modal-lg w-50"
-        role="document"
-      >
-        <div class="modal-content border-0 ">
-          <form @submit.prevent="addPost">
-            <div v-if="onlyText == false && post.imageUrl == false" class="image-upload position-relative">
-              <label for="file-input">
-                <img
-                  v-lazy-load
-                  :data-src="post.image == ''?'/selectimage2.jpg':post.image"
-                  width="100%"
-                  class="img-radius"
-                  alt=""
-                >
-              </label>
-              <input
-                id="file-input"
-                ref="file"
-                class="display-none image-dragdrop"
-                type="file"
-                accept="image/png, image/jpeg, image/gif"
-                required
-                @change="onFileChange"
-              >
-            </div>
-            <div
-              type="button"
-              data-dismiss="modal"
-              aria-label="Close"
-              class="shadow position-absolute exit-modal"
-            >
-              <i class="fas fa-times" />
-            </div>
-            <div class="pl-3 pr-3 pb-3 pt-3">
-              <div class="text-center mb-1">
-                <a :class="onlyText === true?'disabled btn btn-red mt-1':'btn btn-red mt-1'" @click="post.imageUrl = !post.imageUrl;post.image = ''">
-                  <span v-if="post.imageUrl == false"> Use image URL</span>
-                  <span v-else>Upload image</span>
-                </a>
-                <a class="btn btn-green mt-1" @click="onlyText = !onlyText">
-                  <span v-if="onlyText == false"> Only Text</span>
-                  <span v-else>Image</span>
-                </a>
-              </div>
-              <br>
-              <input
-                v-if="post.imageUrl == true && onlyText == false"
-                id="title"
-                v-model="post.image"
-                type="url"
-                class="form-control input-modal mb-2"
-                placeholder="Paste image URL"
-                required
-              >
-              <textarea
-                id="title"
-                v-model="post.title"
-                type="text"
-                class="form-control input-modal"
-                placeholder="Give your post title or description"
-              />
-              <div class="float-left w-50 mt-2">
-                <select v-model="post.lang" class="form-control input-modal">
-                  <option value="English">
-                    English
-                  </option>
-                  <option value="Thai">
-                    Thai
-                  </option>
-                  <option value="French">
-                    French
-                  </option>
-                </select>
-              </div>
-              <button type="submit" class="btn bg-main m-0 mt-2 pull-right float-right">
-                Post
-              </button>
-              <div class="clearfix" />
-            </div>
-          </form>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -548,6 +456,7 @@ export default {
   data () {
     return {
       onlyText: false,
+      posting: false,
       post: {
         title: '',
         lang: 'English',
@@ -663,10 +572,10 @@ export default {
       reader.readAsDataURL(file)
     },
     addPost () {
+      this.posting = true
       if (this.post.image === '') {
         this.onlyText = true
       }
-      this.$toast.show('Posting...').goAway(1500)
       // if (this.post.image === '' && this.onlyText === false) {
       //   this.$toast.error('Image is empty').goAway(1500)
       // } else if (this.post.title === '' && this.onlyText === true) {
@@ -674,7 +583,9 @@ export default {
       // } else {
       if (this.post.image === '' && this.post.title === '') {
         this.$toast.error('Title or Description is empty').goAway(1500)
+        this.posting = false
       } else {
+        this.$toast.show('Posting...').goAway(1500)
         this.$axios.post(
           '/post',
           this.post,
@@ -709,6 +620,7 @@ export default {
           this.post.image = ''
           this.post.imageUrl = false
           this.onlyText = false
+          this.posting = false
         })
       }
 
@@ -733,6 +645,24 @@ export default {
 </script>
 
 <style scoped>
+[class*="dropdown-menu-tip-"]::after {
+  content: '';
+  position: absolute;
+  width: .5rem;
+  height: .5rem;
+  background-color: white;
+  border: solid 1px rgba(0, 0, 0, .15);
+  border-bottom: none;
+  border-left: none;
+}
+.dropdown-menu-tip-n::after {
+  top: calc(-.25rem - 1px);
+  right: 0.4rem;
+  transform: rotate(-45deg);
+}
+.dropdown-menu-tip-n {
+  width:15%;
+}
 .btn-green {
   background: #06d6a0;
   color:white;
@@ -989,6 +919,9 @@ export default {
 }
 .width-notification {
   width: 30%;
+}
+.width-dropdown-card {
+  width: 15% !important;
 }
 .btn-newpost {
   background: #00a8e8;
