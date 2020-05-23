@@ -373,9 +373,9 @@
             <client-only>
               <infinite-loading ref="InfiniteLoading" class="w-100" @infinite="loadMoreTours">
                 <div slot="spinner" class="w-100">
-                  <div class="row">
+                  <div class="row p-1">
                     <div class="col-md-12">
-                      <div class="bg-white text-center w-100 p-3">
+                      <div class="bg-white shadow-sm text-center w-100 p-3">
                         <i class="fas fa-circle-notch fa-spin" />
                       </div>
                     </div>

@@ -100,6 +100,11 @@
           </div>
         </div>
       </div>
+      <div v-if="page < lastPage">
+        <div class="pointer mt-3 text-center" @click="showMoreMeme();loadmore=true">
+          Show more comments <span v-if="loadmore"><i class="fas fa-circle-notch fa-spin" /></span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -114,11 +119,12 @@ export default {
   },
   data () {
     return {
+      loadmore: false,
       comments: [],
       meme: false,
       massage: '',
       image: '',
-      lastPage: 0,
+      lastPage: 1,
       page: 1
     }
   },
@@ -162,6 +168,12 @@ export default {
         // console.log(e.target.result)
       }
       reader.readAsDataURL(file)
+    },
+    async showMoreMeme () {
+      this.page += 1
+      const dataComment = await this.$axios.get(`/comment/${this.msg}?page=${this.page}`)
+      this.comments.push.apply(this.comments, dataComment.data.reqer)
+      this.loadmore = false
     },
     sendMeme () {
       this.$axios
