@@ -14,6 +14,12 @@ html,
 body {
   font-family: "romeo", "Mitr", sans-serif !important;
 }
+.color-main {
+  color: #00a8e8;
+}
+.color-dark {
+  color: #212121;
+}
 .dropdown-item{
   border:0px !important;
   outline: none !important;
@@ -23,9 +29,7 @@ body {
   border:0px !important;
   color:white !important;
 }
-.color-main {
-  color: #00a8e8;
-}
+
 .color-muted {
   color: #dddd;
 }

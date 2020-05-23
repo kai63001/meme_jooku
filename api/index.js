@@ -255,6 +255,18 @@ app.post('/addcomment', requireJWTAuth, (req, res) => {
   }
 })
 
+app.delete('/delete/post/:p_id', requireJWTAuth, (req, res) => {
+  const usertoken = req.headers.authorization
+  const decoded = jwt.decode(usertoken, SECRET)
+  con.query('DELETE FROM posts WHERE p_id = ? AND p_mid = ?', [req.params.p_id, decoded.id], (_err, reqer) => {
+    if (_err) {
+      res.send(_err)
+    } else {
+      res.send(reqer)
+    }
+  })
+})
+
 module.exports = {
   path: '/api/',
   handler: app

@@ -1,5 +1,85 @@
 <template>
   <div class="">
+    <div v-if="$auth.loggedIn" class="col-md-12 item">
+      <div class="card-feed bg-white shadow-sm rounded">
+        <div class="p-3">
+          <div class="row">
+            <div class="col-md-2 col-3">
+              <div class="pr-3">
+                <img
+                  v-lazy-load
+                  :data-src="$auth.user.m_image"
+                  class="rounded-circle image-avatar"
+                  alt=""
+                >
+              </div>
+            </div>
+            <div class="col-md-10 col-9 pl-0 pl-text">
+              <form @submit.prevent="addPost">
+                <textarea
+                  id=""
+                  v-model="post.title"
+                  class="form-control input-modal"
+                  name=""
+                  cols="10"
+                  placeholder="Give your post title or description (drag drop image here)"
+                  rows="3"
+                  @drop.prevent="onFileChange"
+                  @dragover.prevent
+                />
+                <div v-if="post.imageUrl" class="w-50 mt-2">
+                  <input v-model="post.image" type="url" class="form-control input-modal" required placeholder="image url">
+                </div>
+                <div
+                  class="my-3 float-left"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Attach a picture"
+                  style="width:20px;cursor: pointer;z-index:2"
+                >
+                  <i class="fas fa-image font-image color-main" />
+                  <input
+                    ref="file"
+                    type="file"
+                    class="fileImage"
+                    accept="image/png, image/jpeg, image/gif"
+                    @change="onFileChange"
+                  >
+                </div>
+                <div
+                  class="my-3 float-left ml-3 pointeronly"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Attach a picture by url"
+                  @click="post.imageUrl = !post.imageUrl"
+                >
+                  <i class="fas fa-link color-main" />
+                </div>
+                <div class="mt-1 float-right">
+                  <button v-if="posting == false" type="submit" class="btn bg-main m-0 mt-2 pull-right float-right">
+                    Post
+                  </button>
+                  <button v-else type="submit" class="btn bg-main m-0 mt-2 pull-right float-right" disabled>
+                    Posting..
+                  </button>
+                </div>
+                <div class="clearfix" />
+
+                <div v-if="post.image != '' || (isUrl(post.image) && post.imageUrl == true)">
+                  <img
+                    v-lazy-load
+                    :data-src="post.image"
+                    width="100%"
+                    class="rounded"
+                    alt=""
+                  >
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div v-for="(meme,i) in memeData" :key="i" class="col-md-12 item">
       <div class="card-feed bg-white shadow-sm rounded">
         <div class="p-3">
@@ -39,7 +119,7 @@
                   <i class="far fa-plus-square mr-2" /> Playlist
                 </button>
                 <hr class="p-0 m-2">
-                <button class="dropdown-item">
+                <button class="dropdown-item" @click="deletePost(meme.p_id,i)">
                   <i class="far fa-trash-alt mr-2" /> Delete
                 </button>
               </div>
@@ -131,6 +211,14 @@ export default {
   },
   data () {
     return {
+      onlyText: false,
+      posting: false,
+      post: {
+        title: '',
+        lang: 'English',
+        image: '',
+        imageUrl: false
+      },
       memeData: [],
       page: 1
     }
@@ -144,6 +232,11 @@ export default {
     })
   },
   methods: {
+    async deletePost (id, index) {
+      await this.$axios.delete(`/delete/post/${id}`).then((res) => {
+        this.memeData.splice(index, 1)
+      }).catch((e) => { console.log(e) })
+    },
     onCommentPost (i) {
       console.log(i)
       this.$set(this.memeData[i], 'comments', (this.memeData[i].comments || 0) + 1)
@@ -198,6 +291,98 @@ export default {
           $state.complete()
         }
       }).catch((e) => { console.log(e) })
+    },
+    isUrl (s) {
+      const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/
+      return regexp.test(s)
+    },
+    onFileChange (e) {
+      const files = e.target.files || e.dataTransfer.files
+      if (!files.length) {
+        return
+      }
+      console.log(files[0].type)
+      if (files[0].size > 800000) {
+        this.$toast.error('Image size limit 800Kb').goAway(1500)
+      // eslint-disable-next-line eqeqeq
+      } else if (files[0].type != 'image/png' && files[0].type != 'image/jpeg' && files[0].type != 'image/gif') {
+        this.$toast.error('Not allowed file type (png,jpg,gif)').goAway(1500)
+      } else {
+        this.createImage(files[0])
+      }
+      // eslint-disable-next-line camelcase
+      // const file_image = this.$refs.file.files[0]
+      // const formData = new FormData()
+      // formData.append('file', file_image)
+
+    // console.log(file_image)
+    },
+    createImage (file) {
+    // eslint-disable-next-line no-unused-vars
+      const image = new Image()
+      const reader = new FileReader()
+      const vm = this
+
+      reader.onload = (e) => {
+        vm.post.image = e.target.result
+      // console.log(e.target.result)
+      }
+      reader.readAsDataURL(file)
+    },
+    addPost () {
+      this.posting = true
+      if (this.post.image === '') {
+        this.onlyText = true
+      }
+      // if (this.post.image === '' && this.onlyText === false) {
+      //   this.$toast.error('Image is empty').goAway(1500)
+      // } else if (this.post.title === '' && this.onlyText === true) {
+      //   this.$toast.error('Title or Description is empty').goAway(1500)
+      // } else {
+      if (this.post.image === '' && this.post.title === '') {
+        this.$toast.error('Title or Description is empty').goAway(1500)
+        this.posting = false
+      } else {
+        this.$toast.show('Posting...').goAway(1500)
+        this.$axios.post(
+          '/post',
+          this.post,
+          {
+            onUploadProgress: (progressEvent) => {
+              console.log('success')
+            }
+          }
+        ).then((res) => {
+          console.log(res.data.title)
+          this.$toast.success('Post successful').goAway(1500)
+          // eslint-disable-next-line no-undef
+          $('#post').modal('hide')
+          console.log(res.data.reqer.insertId)
+          this.memeData.unshift({
+            p_id: res.data.reqer.insertId,
+            p_detail: res.data.title,
+            p_image: this.post.image,
+            p_lang: this.post.lang,
+            p_hashtag: res.data.hashtag,
+            p_date: '1589395601190',
+            m_id: this.$auth.user.m_id,
+            m_name: this.$auth.user.m_name,
+            m_image: this.$auth.user.m_image,
+            likes: 0,
+            liked: null,
+            commentsShow: 0,
+            comments: 0
+          })
+          this.post.title = ''
+          this.post.lang = 'English'
+          this.post.image = ''
+          this.post.imageUrl = false
+          this.onlyText = false
+          this.posting = false
+        })
+      }
+
+    // }
     }
   }
 }
@@ -222,4 +407,79 @@ export default {
 .pointeronly {
   cursor: pointer;
 }
+div.dropdown-item:focus{
+  background: #00a8e8 !important;
+}
+[class*="dropdown-menu-tip-"]::after {
+  content: '';
+  position: absolute;
+  width: .5rem;
+  height: .5rem;
+  background-color: white;
+  border: solid 1px rgba(0, 0, 0, .15);
+  border-bottom: none;
+  border-left: none;
+}
+.dropdown-menu-tip-n::after {
+  top: calc(-.25rem - 1px);
+  right: 0.4rem;
+  transform: rotate(-45deg);
+}
+.dropdown-menu-tip-n {
+  width:15%;
+}
+.md-form.md-outline label.active {
+  left: 8px;
+  padding-right: 5px;
+  padding-left: 5px;
+  font-weight: 500;
+  background: #3c424b;
+  -webkit-transform: translateY(-13px) scale(0.8);
+  transform: translateY(-13px) scale(0.8);
+}
+.input-modal {
+  background: #f7f7f7;
+  border: none;
+  color: #212121;
+}
+.input-modal:focus{
+  outline:none;
+}
+
+.pl-text{
+  margin-left: -3%;
+  padding-right: 5px;
+}
+
+.image-dragdrop {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0;
+  cursor: pointer;
+}
+::placeholder {
+  color: #212121 !important;
+  opacity: 0.7; /* Firefox */
+}
+
+:-ms-input-placeholder {
+  color: #212121 !important;
+}
+
+::-ms-input-placeholder {
+  color: #212121 !important;
+}
+
+.fileImage {
+  position: absolute;
+  left: 0px;
+  bottom:15px;
+  width: 30px;
+  opacity: 0;
+  cursor: pointer;
+}
+
 </style>
