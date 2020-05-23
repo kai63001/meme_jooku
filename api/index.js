@@ -218,7 +218,7 @@ app.get('/comment/:p_id', (req, res) => {
     page = 1
   }
   const start = (page - 1) * perpage
-  con.query('SELECT c_id FROM comment', function (err, resquerter) {
+  con.query('SELECT c_id FROM comment WHERE c_pid = ?', [req.params.p_id], function (err, resquerter) {
     if (err) {
       res.send('/404')
     } else {
@@ -227,8 +227,6 @@ app.get('/comment/:p_id', (req, res) => {
           res.send(_err)
         } else {
           const lastPage = Math.ceil(resquerter.length / perpage)
-          res.lastPage = lastPage
-          res.count = resquerter.length
           res.send({ lastPage, reqer })
         }
       })

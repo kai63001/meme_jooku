@@ -117,7 +117,9 @@ export default {
       comments: [],
       meme: false,
       massage: '',
-      image: ''
+      image: '',
+      lastPage: 0,
+      page: 1
     }
   },
   async created () {
@@ -127,7 +129,8 @@ export default {
       $('[data-toggle="tooltip"]').tooltip()
     })
     const dataComment = await this.$axios.get(`/comment/${this.msg}`)
-    this.comments = dataComment.data
+    this.comments = dataComment.data.reqer
+    this.lastPage = dataComment.data.lastPage
   },
   methods: {
     onFileChange (e) {
