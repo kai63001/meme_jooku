@@ -100,6 +100,7 @@
           </div>
         </div>
       </div>
+      <!-- show more comment system -->
       <div v-if="page < lastPage">
         <div class="pointer mt-3 text-center" @click="showMoreMeme();loadmore=true">
           Show more comments <span v-if="loadmore"><i class="fas fa-circle-notch fa-spin" /></span>
@@ -169,6 +170,7 @@ export default {
       }
       reader.readAsDataURL(file)
     },
+    // show more comments system
     async showMoreMeme () {
       this.page += 1
       const dataComment = await this.$axios.get(`/comment/${this.msg}?page=${this.page}`)
