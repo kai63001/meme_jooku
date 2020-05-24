@@ -202,7 +202,7 @@
 </template>
 
 <script>
-import comments from '~/components/comments'
+import comments from '~/components/index/comments'
 
 export default {
   name: 'Card',
