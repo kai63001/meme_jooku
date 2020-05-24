@@ -187,12 +187,13 @@ app.get('/main', (req, res) => {
 app.get('/like/:p_id', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
+  // ตรวจสอบว่า like comment หรือ like post
   if (req.query.s === 'comment') {
     con.query('SELECT * FROM like_comment WHERE lc_cid = ? AND lc_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
       if (_err1) {
         console.log(_err1)
       } else if (reqer1.length < 1) {
-        con.query('INSERT INTO like_comment (lc_cid,lc_mid) VALUES (?,?)', [req.params.p_id, decoded.id], (_err, reqer) => {
+        con.query('INSERT INTO like_comment (lc_pid,lc_cid,lc_mid) VALUES (?,?,?)', [req.query.pid, req.params.p_id, decoded.id], (_err, reqer) => {
           console.log(_err)
           res.send('success')
         })
@@ -215,6 +216,7 @@ app.get('/like/:p_id', requireJWTAuth, (req, res) => {
 app.delete('/unlike/:p_id', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
+  // ตรวจสอบว่า like comment หรือ like post
   if (req.query.s === 'comment') {
     con.query('DELETE FROM like_comment WHERE lc_cid = ? AND lc_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
       if (_err1) {
@@ -283,10 +285,11 @@ app.delete('/delete/post/:p_id', requireJWTAuth, (req, res) => {
   const decoded = jwt.decode(usertoken, SECRET)
   con.query('DELETE FROM posts WHERE p_id = ? AND p_mid = ?', [req.params.p_id, decoded.id], (_err, reqer) => {
     if (_err) {
+      console.log(_err)
       res.send(_err)
     } else {
-      con.query('DELETE FROM comment WHERE p_id = ?', [req.params.p_id], (_err, reqer2) => {
-
+      con.query('DELETE FROM comment WHERE c_pid = ?;DELETE FROM likes WHERE l_pid = ?;DELETE FROM like_comment WHERE lc_pid = ?;', [req.params.p_id, req.params.p_id, req.params.p_id], (_err, reqer2) => {
+        console.log(_err)
       })
       res.send(reqer)
     }

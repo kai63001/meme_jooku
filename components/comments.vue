@@ -85,7 +85,7 @@
               </div>
               <div class="col-md-10 col-9 pl-0">
                 <div class="comment">
-                  <span class="color-main"> {{ c.m_name }}</span>
+                  <span class="color-main"> {{ c.m_name }}</span> <span class="color-dark-3">·</span> <span class="color-dark-3 font-smal"> {{ ($moment(parseInt(c.c_date))).replace(' minutes','m').replace(' hours','h').replace(' days','d') }}</span>
                   <br>
                   {{ c.c_comment }}
                   <br>
@@ -99,7 +99,6 @@
                   <span v-else :class="{'mr-1 pointer':true}"><i class="fas fa-laugh-squint " style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
                   <!-- replay -->
                   <span class="pointer"> <i class="fas fa-reply" style="font-size:15px;" /> replay</span>
-                  <span class="font-smal"> · {{ ($moment(parseInt(c.c_date))).replace(' minutes','m').replace(' hours','h').replace(' days','d') }}</span>
                 </div>
               </div>
             </div>
@@ -152,7 +151,7 @@ export default {
     async likeComment (id, index) {
       // ตรวจสอบว่า กด like แล้ว
       if (this.comments[index].liked != null && this.comments[index].liked.includes(this.$auth.user.m_id)) {
-        await this.$axios.delete(`/unlike/${id}?s=comment`).then((res) => {
+        await this.$axios.delete(`/unlike/${id}?s=comment&pid=${this.msg}`).then((res) => {
           console.log(res.data)
         }).catch((e) => { console.log(e) })
         let liked = this.comments[index].liked
@@ -174,7 +173,7 @@ export default {
           this.$set(this.comments[index], 'liked', liked)
         }
       } else {
-        await this.$axios.get(`/like/${id}?s=comment`).then((res) => {
+        await this.$axios.get(`/like/${id}?s=comment&pid=${this.msg}`).then((res) => {
           console.log(res.data)
         }).catch((e) => { console.log(e) })
         this.$set(this.comments[index], 'likes', (this.comments[index].likes || 0) + 1)
@@ -238,23 +237,23 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res.data.title)
+          this.comments.unshift({
+            c_id: res.data.insertId,
+            c_mid: this.$auth.user.m_name,
+            c_comment: this.massage,
+            c_image: this.image,
+            m_id: this.$auth.user.m_name,
+            m_name: this.$auth.user.m_name,
+            m_image: this.$auth.user.m_image,
+            c_date: Date.now()
+          })
+          this.$emit('onCommentPost', this.index)
+          this.massage = ''
+          this.image = ''
+          this.meme = false
+          console.log(res.data.insertId)
           // eslint-disable-next-line no-undef
         })
-      this.$emit('onCommentPost', this.index)
-      this.comments.unshift({
-        c_id: 2,
-        c_mid: 6,
-        c_comment: this.massage,
-        c_image: this.image,
-        m_id: 6,
-        m_name: this.$auth.user.m_name,
-        m_image: this.$auth.user.m_image,
-        c_date: Date.now()
-      })
-      this.massage = ''
-      this.image = ''
-      this.meme = false
     }
   }
 }
@@ -295,7 +294,7 @@ export default {
   opacity: 0.7; /* Firefox */
 }
 .font-smal{
-  font-size:13px
+  font-size:14px
 }
 
 :-ms-input-placeholder {
