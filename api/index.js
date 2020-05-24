@@ -104,10 +104,12 @@ app.post('/post', requireJWTAuth, (req, res) => {
   const decoded = jwt.decode(usertoken, SECRET)
   console.log(req.body.title)
   let des = req.body.title
-  let hashtag = des.match(/\B#\w\w+\b/g)
+  // eslint-disable-next-line no-control-regex
+  let hashtag = des.match(/(#(?:[^\x00-\x7F]|\w)+)/g)
   console.log(hashtag)
   if (hashtag !== null && hashtag.length > 0) {
-    des = des.replace(/#[A-Za-z0-9]*/g, '').trim()
+    // eslint-disable-next-line no-control-regex
+    des = des.replace(/(#(?:[^\x00-\x7F]|\w)+)/g, '').trim()
     hashtag.forEach((h) => {
       con.query('SELECT * FROM hashtag WHERE h_name = ?', [h], (_err, reqer1) => {
         if (reqer1.length === 0) {
@@ -185,11 +187,22 @@ app.get('/main', (req, res) => {
 app.get('/like/:p_id', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
+  if (req.query.s === 'comment') {
+    con.query('SELECT * FROM like_comment WHERE lc_cid = ? AND lc_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
+      if (_err1) {
+        console.log(_err1)
+      } else if (reqer1.length < 1) {
+        con.query('INSERT INTO like_comment (lc_cid,lc_mid) VALUES (?,?)', [req.params.p_id, decoded.id], (_err, reqer) => {
+          console.log(_err)
+          res.send('success')
+        })
+      }
+    })
+  }
   con.query('SELECT * FROM likes WHERE l_pid = ? AND l_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
     if (_err1) {
       console.log(_err1)
-    }
-    if (reqer1.length < 1) {
+    } else if (reqer1.length < 1) {
       con.query('INSERT INTO likes (l_pid,l_mid) VALUES (?,?)', [req.params.p_id, decoded.id], (_err, reqer) => {
         console.log(_err)
         res.send('success')
@@ -201,12 +214,21 @@ app.get('/like/:p_id', requireJWTAuth, (req, res) => {
 app.delete('/unlike/:p_id', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
-  con.query('DELETE FROM likes WHERE l_pid = ? AND l_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
-    if (_err1) {
-      console.log(_err1)
-    }
-    res.send('success')
-  })
+  if (req.query.s === 'comment') {
+    con.query('DELETE FROM like_comment WHERE lc_cid = ? AND lc_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
+      if (_err1) {
+        console.log(_err1)
+      }
+      res.send('success')
+    })
+  } else {
+    con.query('DELETE FROM likes WHERE l_pid = ? AND l_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
+      if (_err1) {
+        console.log(_err1)
+      }
+      res.send('success')
+    })
+  }
 })
 // show comment system
 app.get('/comment/:p_id', (req, res) => {
@@ -222,7 +244,7 @@ app.get('/comment/:p_id', (req, res) => {
     if (err) {
       res.send('/404')
     } else {
-      con.query('SELECT c_id,c_mid,c_comment,c_image,m_id,m_name,m_image FROM comment LEFT JOIN members m on m.m_id = comment.c_mid WHERE c_pid = ? ORDER BY c_date DESC limit ? , ?', [req.params.p_id, start, perpage], (_err, reqer) => {
+      con.query('SELECT c_id,c_mid,c_comment,c_image,m_id,m_name,m_image,c_date,COUNT(lc.lc_id) as likes ,GROUP_CONCAT(lc.lc_mid separator \',\') as liked FROM comment LEFT JOIN members m on m.m_id = comment.c_mid LEFT JOIN like_comment lc on lc.lc_cid = comment.c_id WHERE c_pid = ? GROUP BY comment.c_id ORDER BY c_date DESC limit ? , ?', [req.params.p_id, start, perpage], (_err, reqer) => {
         if (_err) {
           res.send(_err)
         } else {
@@ -254,7 +276,7 @@ app.post('/addcomment', requireJWTAuth, (req, res) => {
     })
   }
 })
-
+// deletepost system
 app.delete('/delete/post/:p_id', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
@@ -262,6 +284,9 @@ app.delete('/delete/post/:p_id', requireJWTAuth, (req, res) => {
     if (_err) {
       res.send(_err)
     } else {
+      con.query('DELETE FROM comment WHERE p_id = ?', [req.params.p_id], (_err, reqer2) => {
+
+      })
       res.send(reqer)
     }
   })

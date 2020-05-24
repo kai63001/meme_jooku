@@ -88,9 +88,18 @@
                   <span class="color-main"> {{ c.m_name }}</span>
                   <br>
                   {{ c.c_comment }}
+                  <br>
                 </div>
                 <div v-if="c.c_image != ''">
                   <img v-lazy-load :data-src="c.c_image" class="rounded mt-2" width="100%" :alt="c.c_comment">
+                </div>
+                <div class="mt-1 ml-1 color-dark-3">
+                  <!-- like comment -->
+                  <span v-if="$auth.loggedIn" :class="{'mr-1 pointer':true,'color-main':c.liked != null && c.liked.includes($auth.user.m_id)}" @click="likeComment(c.c_id,i)"><i class="fas fa-laugh-squint " style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
+                  <span v-else :class="{'mr-1 pointer':true}"><i class="fas fa-laugh-squint " style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
+                  <!-- replay -->
+                  <span class="pointer"> <i class="fas fa-reply" style="font-size:15px;" /> replay</span>
+                  <span class="font-smal"> · {{ ($moment(parseInt(c.c_date))).replace(' minutes','m').replace(' hours','h').replace(' days','d') }}</span>
                 </div>
               </div>
             </div>
@@ -102,7 +111,7 @@
       </div>
       <!-- show more comment system -->
       <div v-if="page < lastPage">
-        <div class="pointer mt-3 text-center" @click="showMoreMeme();loadmore=true">
+        <div class="pointer mt-3 text-center color-dark-2" @click="showMoreMeme();loadmore=true">
           Show more comments <span v-if="loadmore"><i class="fas fa-circle-notch fa-spin" /></span>
         </div>
       </div>
@@ -140,6 +149,42 @@ export default {
     this.lastPage = dataComment.data.lastPage
   },
   methods: {
+    async likeComment (id, index) {
+      // ตรวจสอบว่า กด like แล้ว
+      if (this.comments[index].liked != null && this.comments[index].liked.includes(this.$auth.user.m_id)) {
+        await this.$axios.delete(`/unlike/${id}?s=comment`).then((res) => {
+          console.log(res.data)
+        }).catch((e) => { console.log(e) })
+        let liked = this.comments[index].liked
+        console.log('liked :' + liked)
+        // eslint-disable-next-line camelcase
+        const index_dele = liked.indexOf(this.$auth.user.m_id)
+        // eslint-disable-next-line camelcase
+        console.log('index_dele :' + index_dele)
+        // eslint-disable-next-line camelcase
+        if (index_dele > -1) {
+          if (liked.includes(',')) {
+            liked = liked.split(',')
+            liked.splice(index_dele, 1)
+          } else {
+            liked = ''
+          }
+          console.log(liked)
+          this.$set(this.comments[index], 'likes', (this.comments[index].likes || 0) - 1)
+          this.$set(this.comments[index], 'liked', liked)
+        }
+      } else {
+        await this.$axios.get(`/like/${id}?s=comment`).then((res) => {
+          console.log(res.data)
+        }).catch((e) => { console.log(e) })
+        this.$set(this.comments[index], 'likes', (this.comments[index].likes || 0) + 1)
+        if (this.comments[index].liked == null) {
+          this.$set(this.comments[index], 'liked', [this.$auth.user.m_id])
+        } else {
+          this.$set(this.comments[index], 'liked', this.comments[index].liked + ',' + this.$auth.user.m_id)
+        }
+      }
+    },
     onFileChange (e) {
       const files = e.target.files || e.dataTransfer.files
       if (!files.length) {
@@ -204,7 +249,8 @@ export default {
         c_image: this.image,
         m_id: 6,
         m_name: this.$auth.user.m_name,
-        m_image: this.$auth.user.m_image
+        m_image: this.$auth.user.m_image,
+        c_date: Date.now()
       })
       this.massage = ''
       this.image = ''
@@ -248,6 +294,9 @@ export default {
   color: #212121 !important;
   opacity: 0.7; /* Firefox */
 }
+.font-smal{
+  font-size:13px
+}
 
 :-ms-input-placeholder {
   color: #212121 !important;
@@ -259,6 +308,7 @@ export default {
 .ml-10 {
   margin-left: -10px;
 }
+
 .pointer {
   cursor: pointer;
 }

@@ -152,31 +152,31 @@
           <div class="row">
             <div v-if="$auth.loggedIn" class="col-md-4 col-4">
               <div v-show="meme.liked != null && meme.liked.includes($auth.user.m_id)" class="text-center pt-2 pb-2 pointer color-main" @click="unlike(meme.p_id,i)">
-                <i class="fas fa-laugh-squint " style="font-size:17px;" />
+                <i class="mr-1 fas fa-laugh-squint " style="font-size:17px;" />
                 <span style="matgin-top:-12px">{{ meme.likes }}</span>
               </div>
-              <div v-show="meme.liked == null || !meme.liked.includes($auth.user.m_id)" class="text-center pt-2 pb-2 pointer" @click="like(meme.p_id,i)">
-                <i class="far fa-laugh-squint" style="font-size:17px" />
-                <span style="matgin-top:-12px">{{ meme.likes }}</span>
+              <div v-show="meme.liked == null || !meme.liked.includes($auth.user.m_id)" class="text-center pt-2 pb-2 pointer color-dark-3" @click="like(meme.p_id,i)">
+                <i class="mr-1 fas fa-laugh-squint" style="font-size:17px" />
+                <span v-if="meme.likes > 0" style="matgin-top:-12px">{{ meme.likes }}</span>
               </div>
             </div>
             <div v-else class="col-md-4 col-4">
-              <nuxt-link to="/auth/login" class="pointer text-decoration-none color-dark">
+              <nuxt-link to="/auth/login" class="pointer text-decoration-none color-dark-3">
                 <div class="text-center pt-2 pb-2 pointer">
-                  <i class="far fa-laugh-squint" style="font-size:17px" />
-                  <span style="matgin-top:-12px">{{ meme.likes }}</span>
+                  <i class="mr-1 fas fa-laugh-squint" style="font-size:17px" />
+                  <span v-if="meme.likes > 0" style="matgin-top:-12px">{{ meme.likes }}</span>
                 </div>
               </nuxt-link>
             </div>
             <div class="col-md-4 col-4">
-              <div class="text-center pt-2 pb-2 pointer" @click="commentShow(i)">
-                <i class="far fa-comments" />
-                <span style="matgin-top:-12px">{{ meme.comments }}</span>
+              <div class="text-center pt-2 pb-2 pointer color-dark-3" @click="commentShow(i)">
+                <i class="mr-1 fas fa-comments" />
+                <span v-if="meme.comments > 0" style="matgin-top:-12px">{{ meme.comments }}</span>
               </div>
             </div>
             <div class="col-md-4 col-4">
-              <div class="text-center pt-2 pb-2 pointer">
-                <i class="far fa-share-square" />
+              <div class="text-center pt-2 pb-2 pointer color-dark-3">
+                <i class="mr-1 fas fa-share-square" />
                 <span style="matgin-top:-12px" />
               </div>
             </div>
@@ -224,7 +224,9 @@ export default {
     }
   },
   mounted () {
-    this.loadMoreTours()
+    if (!this.$auth.loggedIn) {
+      this.loadMoreTours()
+    }
     // eslint-disable-next-line no-undef
     $(function () {
       // eslint-disable-next-line no-undef
@@ -364,7 +366,7 @@ export default {
             p_image: this.post.image,
             p_lang: this.post.lang,
             p_hashtag: res.data.hashtag,
-            p_date: '1589395601190',
+            p_date: Date.now(),
             m_id: this.$auth.user.m_id,
             m_name: this.$auth.user.m_name,
             m_image: this.$auth.user.m_image,
@@ -399,8 +401,8 @@ export default {
 }
 .pointer:hover {
   border-radius: 4px;
-  background:#3c424b;
-  color:white;
+  /* background:#3c424b;
+  color:white; */
   cursor: pointer;
 }
 

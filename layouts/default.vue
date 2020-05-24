@@ -47,6 +47,13 @@ body {
 .image-avatar {
   width: 100%;
 }
+.color-dark-2 {
+  color: #212121 !important;
+  opacity: 0.7; /* Firefox */
+}
+.color-dark-3 {
+  color: #7d7d82 !important;
+}
 @media only screen and (width: 1920px) {
   .image-avatar {
     width: 70% !important;
