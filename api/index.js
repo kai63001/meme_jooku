@@ -198,17 +198,18 @@ app.get('/like/:p_id', requireJWTAuth, (req, res) => {
         })
       }
     })
+  } else {
+    con.query('SELECT * FROM likes WHERE l_pid = ? AND l_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
+      if (_err1) {
+        console.log(_err1)
+      } else if (reqer1.length < 1) {
+        con.query('INSERT INTO likes (l_pid,l_mid) VALUES (?,?)', [req.params.p_id, decoded.id], (_err, reqer) => {
+          console.log(_err)
+          res.send('success')
+        })
+      }
+    })
   }
-  con.query('SELECT * FROM likes WHERE l_pid = ? AND l_mid = ?', [req.params.p_id, decoded.id], (_err1, reqer1) => {
-    if (_err1) {
-      console.log(_err1)
-    } else if (reqer1.length < 1) {
-      con.query('INSERT INTO likes (l_pid,l_mid) VALUES (?,?)', [req.params.p_id, decoded.id], (_err, reqer) => {
-        console.log(_err)
-        res.send('success')
-      })
-    }
-  })
 })
 // unlike system
 app.delete('/unlike/:p_id', requireJWTAuth, (req, res) => {
