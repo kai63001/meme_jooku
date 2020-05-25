@@ -12,6 +12,7 @@
 }
 html,
 body {
+    background: #f8f8f8 !important;
   font-family: "romeo", "Mitr", sans-serif !important;
 }
 .color-main {

@@ -86,13 +86,15 @@
           <div class="name float-left w-80" style="width:80%">
             <div class="row">
               <div class="col-md-2 col-3">
-                <img
-                  v-lazy-load
-                  :data-src="meme.m_image"
-                  class="rounded-circle image-avatar"
-                  width="100%"
-                  alt=""
-                >
+                <nuxt-link :to="`/u/${meme.m_username}`">
+                  <img
+                    v-lazy-load
+                    :data-src="meme.m_image"
+                    class="rounded-circle image-avatar"
+                    width="100%"
+                    alt=""
+                  >
+                </nuxt-link>
               </div>
               <div class="col-md-10 col-9 pl-0">
                 <span
