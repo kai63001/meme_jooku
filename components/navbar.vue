@@ -134,4 +134,8 @@ export default {
 .width-dropdown-card {
   width: 15% !important;
 }
+.bg-white {
+  background: white;
+  border-bottom: 1px solid #dddd;
+}
 </style>

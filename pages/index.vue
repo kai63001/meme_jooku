@@ -23,12 +23,13 @@
           <br>
           <br>
           <div class="pr-4">
+            <h4>Trends for you</h4>
             <div class="bg-white rounded">
-              <div class="pl-2 pt-3 border-bottom">
+              <!-- <div class="pl-2 pt-3 border-bottom">
                 <h4>Trends for you</h4>
-              </div>
+              </div> -->
               <nuxt-link v-for="(h,index) in hashtag" :key="index" to="" class="text-decoration-none text-dark">
-                <div class="p-3  border-bottom">
+                <div class="pl-3 pr-3 pt-2 pb-2 border-bottom">
                   <div class="color-main">
                     {{ h.h_name }}
                   </div>

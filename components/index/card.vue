@@ -143,13 +143,18 @@
             </nuxt-link>
           </div>
         </div>
-        <img
-          v-if="meme.p_image != ''"
-          v-lazy-load
-          width="100%"
-          :data-src="meme.p_image"
-          :alt="meme.p_detail + ' ID '+ meme.p_id"
-        >
+        <div class="position-relative">
+          <img
+            v-if="meme.p_image != ''"
+            v-lazy-load
+            width="100%"
+            :data-src="meme.p_image"
+            :alt="meme.p_detail + ' ID '+ meme.p_id"
+          >
+          <div v-if="meme.p_image.substr(meme.p_image.length-3,meme.p_image.length) == 'gif'" class="gifed">
+            GIF
+          </div>
+        </div>
         <div class="p-3">
           <div class="row">
             <div v-if="$auth.loggedIn" class="col-md-4 col-4">
@@ -372,6 +377,7 @@ export default {
             m_id: this.$auth.user.m_id,
             m_name: this.$auth.user.m_name,
             m_image: this.$auth.user.m_image,
+            m_username: this.$auth.user.m_username,
             likes: 0,
             liked: null,
             commentsShow: 0,
@@ -392,6 +398,15 @@ export default {
 }
 </script>
 <style scoped>
+.gifed{
+    position:absolute;
+    top:3%;
+    right: 3%;
+    color:white;
+    background: rgba(0,0,0,0.7);
+    border-radius: 4px;
+    padding:1px 8px 0px 8px;
+}
 .item {
   display: inline-block;
   padding: 0.25rem;
