@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <div v-if="$auth.loggedIn" class="mt-1" style="margin-left:-15px">
-      <form class="row" autocomplete="off" @submit.prevent="sendReplay">
+      <form class="row pr-1" autocomplete="off" @submit.prevent="sendReplay">
         <div class="col-md-11 col-11">
           <div class="row">
             <div class="col-md-2 col-3">
@@ -15,7 +15,7 @@
               </div>
             </div>
             <div class="col-md-10 col-9 pl-0">
-              <span class="color-main"> {{ $auth.user.m_name }}</span>
+              <span class="color-main text-capitalize"> {{ $auth.user.m_name }}</span>
               <div class="row">
                 <div class="col-md-12">
                   <input
@@ -58,7 +58,7 @@
       </form>
     </div>
     <div v-if="replayComment.length > 0" style="margin-left:-15px">
-      <div v-for="(c, i) in replayComment" :key="i" class="row mt-2">
+      <div v-for="(c, i) in replayComment" :key="i" class="row mt-2 pr-1">
         <div class="col-md-11 col-11">
           <div class="row">
             <div class="col-md-2 col-3">
@@ -74,7 +74,7 @@
             </div>
             <div class="col-md-10 col-9 pl-0">
               <div class="comment">
-                <span class="color-main"> {{ c.m_name }}</span> <span class="color-dark-3">·</span> <span class="color-dark-3 font-smal"> {{ ($moment(parseInt(c.r_date))).replace(' minutes','m').replace(' hours','h').replace(' days','d') }}</span>
+                <span class="color-main text-capitalize"> {{ c.m_name }}</span> <span class="color-dark-3">·</span> <span class="color-dark-3 font-smal"> {{ ($moment(parseInt(c.r_date))).replace(' minutes','m').replace(' hours','h').replace(' days','d') }}</span>
                 <br>
                 {{ c.r_comment }}
                 <br>
@@ -205,7 +205,7 @@ export default {
   border-radius: 4px;
 }
 .comment {
-  width: 99%;
+  width: 100%;
   background: #f7f7f7;
   color: #212121;
   padding: 5px 20px;
@@ -227,7 +227,7 @@ export default {
   background: #f7f7f7;
   border: none;
   padding: 5px 20px;
-  width: 99%;
+  width: 100%;
 }
 ::placeholder {
   color: #212121 !important;

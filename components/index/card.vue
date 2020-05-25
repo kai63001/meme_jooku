@@ -99,7 +99,7 @@
               <div class="col-md-10 col-9 pl-0">
                 <span
                   class="lend"
-                ><strong>{{ meme.m_name }}</strong></span>
+                ><strong><nuxt-link class="text-decoration-none text-dark text-capitalize" :to="`/u/${meme.m_username}`">{{ meme.m_name }}</nuxt-link></strong></span>
                 <br>
                 <span class="text-muted">{{ $moment(parseInt(meme.p_date)) }} ·</span>
                 <nuxt-link

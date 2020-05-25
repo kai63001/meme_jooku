@@ -16,7 +16,7 @@
                 </div>
               </div>
               <div class="col-md-10 col-9 pl-0">
-                <span class="color-main"> {{ $auth.user.m_name }}</span>
+                <span class="color-main text-capitalize"> {{ $auth.user.m_name }}</span>
                 <div class="row">
                   <div class="col-md-12">
                     <input
@@ -85,7 +85,7 @@
               </div>
               <div class="col-md-10 col-9 pl-0">
                 <div class="comment">
-                  <span class="color-main"> {{ c.m_name }}</span> <span class="color-dark-3">·</span> <span class="color-dark-3 font-smal"> {{ ($moment(parseInt(c.c_date))).replace(' minutes','m').replace(' hours','h').replace(' days','d') }}</span>
+                  <span class="color-main text-capitalize"> {{ c.m_name }}</span> <span class="color-dark-3">·</span> <span class="color-dark-3 font-smal"> {{ ($moment(parseInt(c.c_date))).replace(' minutes','m').replace(' hours','h').replace(' days','d') }}</span>
                   <br>
                   {{ c.c_comment }}
                   <br>
