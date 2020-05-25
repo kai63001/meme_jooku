@@ -99,7 +99,7 @@ export default {
   margin-left: 10%;
 }
 .btn-signin {
-  background: #00a8e8 !important;
+  background: #8338ec !important;
   color: white;
   box-shadow: none;
   padding: 15px 70px;

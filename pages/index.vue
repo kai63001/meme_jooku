@@ -205,7 +205,7 @@ export default {
 }
 .btn-follow {
   border: 0px;
-  background: #00a8e8;
+  background: #8338ec;
   color: white;
 }
 .pl-8 {
@@ -239,7 +239,7 @@ html,body {
 }
 
 .btn-newpost {
-  background: #00a8e8;
+  background: #8338ec;
   color: white;
 }
 .img-radius {

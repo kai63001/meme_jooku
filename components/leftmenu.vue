@@ -92,7 +92,7 @@ export default {
   width: 100%;
   font-size: 19px;
   padding-left: 8%;
-  border-left: 3px solid #00a8e8;
+  border-left: 3px solid #8338ec;
   /* background: rgba(255, 107, 107,0.2); */
 }
 .link-menu {
@@ -101,7 +101,7 @@ export default {
 }
 .link-menu:hover {
   text-decoration: none;
-  color: #00a8e8;
+  color: #8338ec;
 }
 .bottom-menu-left {
   position: absolute;

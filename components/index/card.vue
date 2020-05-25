@@ -391,8 +391,6 @@ export default {
           this.posting = false
         })
       }
-
-    // }
     }
   }
 }
@@ -427,7 +425,7 @@ export default {
   cursor: pointer;
 }
 div.dropdown-item:focus{
-  background: #00a8e8 !important;
+  background: #8338ec !important;
 }
 [class*="dropdown-menu-tip-"]::after {
   content: '';

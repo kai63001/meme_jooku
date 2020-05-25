@@ -16,7 +16,7 @@ body {
   font-family: "romeo", "Mitr", sans-serif !important;
 }
 .color-main {
-  color: #00a8e8;
+  color: #8338ec;
 }
 .color-dark {
   color: #212121;
@@ -26,7 +26,7 @@ body {
   outline: none !important;
 }
 .dropdown-item:focus{
-  background: #00a8e8 !important;
+  background: #8338ec !important;
   border:0px !important;
   color:white !important;
 }
@@ -42,7 +42,7 @@ body {
   color: white;
 }
 .bg-main {
-  background: #00a8e8;
+  background: #8338ec;
   color: white;
 }
 .image-avatar {
