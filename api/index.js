@@ -31,7 +31,7 @@ app.get('/', requireJWTAuth, (req, res) => {
 app.get('/user', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
-  con.query('SELECT m_id,m_name,m_email,m_image FROM members WHERE m_id = ?', [decoded.id], (_err, reqer) => {
+  con.query('SELECT m_id,m_username,m_name,m_email,m_image FROM members WHERE m_id = ?', [decoded.id], (_err, reqer) => {
     res.send({ user: reqer[0] })
   })
 })
@@ -247,7 +247,7 @@ app.get('/comment/:p_id', (req, res) => {
     if (err) {
       res.send('/404')
     } else {
-      con.query('SELECT c_id,c_mid,c_comment,c_image,m_id,m_name,m_image,c_date,COUNT(lc.lc_id) as likes ,GROUP_CONCAT(lc.lc_mid separator \',\') as liked FROM comment LEFT JOIN members m on m.m_id = comment.c_mid LEFT JOIN like_comment lc on lc.lc_cid = comment.c_id WHERE c_pid = ? GROUP BY comment.c_id ORDER BY c_date DESC limit ? , ?', [req.params.p_id, start, perpage], (_err, reqer) => {
+      con.query('SELECT c_id,c_mid,c_comment,c_image,m_id,m_name,m_image,c_date,COUNT(lc.lc_id) as likes ,GROUP_CONCAT(lc.lc_mid separator \',\') as liked,false as replay,(SELECT COUNT(*) FROM replay WHERE r_cid = comment.c_id) as replaycount FROM comment LEFT JOIN members m on m.m_id = comment.c_mid LEFT JOIN like_comment lc on lc.lc_cid = comment.c_id WHERE c_pid = ? GROUP BY comment.c_id ORDER BY c_date DESC limit ? , ?', [req.params.p_id, start, perpage], (_err, reqer) => {
         if (_err) {
           res.send(_err)
         } else {
@@ -262,7 +262,7 @@ app.get('/comment/:p_id', (req, res) => {
 app.post('/addcomment', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
-  // ถ้าไม่มีรูป
+  // ถ้ามีรูป
   if (req.body.image !== '') {
     cloudinary.uploader.upload(req.body.image, function (_error, result) {
       console.log(result.url)
@@ -272,7 +272,7 @@ app.post('/addcomment', requireJWTAuth, (req, res) => {
       })
     })
   } else {
-    // ถ้ามีรูป
+    // ถ้าไม่มีรูป
     con.query('INSERT INTO comment (c_pid,c_mid,c_comment,c_image,c_date) VALUES (?,?,?,?,?)', [req.body.c_pid, decoded.id, req.body.c_comment, req.body.image, Date.now()], (_err, reqer) => {
       console.log(_err)
       res.send(reqer)
@@ -294,6 +294,38 @@ app.delete('/delete/post/:p_id', requireJWTAuth, (req, res) => {
       res.send(reqer)
     }
   })
+})
+
+app.get('/replay/:c_id', (req, res) => {
+  con.query('SELECT r_id,r_mid,r_cid,r_pid,r_image,r_comment,m_username,m_image,m_name,r_date FROM replay LEFT JOIN members m on m.m_id = replay.r_mid WHERE r_cid = ? ORDER BY r_date DESC', [req.params.c_id], (_err, reqer) => {
+    if (_err) {
+      console.log(_err)
+      res.send(_err)
+    } else {
+      res.send(reqer)
+    }
+  })
+})
+
+app.post('/comment/replay', requireJWTAuth, (req, res) => {
+  const usertoken = req.headers.authorization
+  const decoded = jwt.decode(usertoken, SECRET)
+  // ถ้ามีรูป
+  if (req.body.image !== '') {
+    cloudinary.uploader.upload(req.body.image, function (_error, result) {
+      console.log(result.url)
+      con.query('INSERT INTO replay (r_pid,r_mid,r_comment,r_image,r_date,r_cid) VALUES (?,?,?,?,?,?)', [req.body.c_pid, decoded.id, req.body.c_comment, result.url, Date.now(), req.body.c_id], (_err, reqer) => {
+        console.log(_err)
+        res.send(reqer)
+      })
+    })
+  } else {
+    // ถ้าไม่มีรูป
+    con.query('INSERT INTO replay (r_pid,r_mid,r_comment,r_image,r_date,r_cid) VALUES (?,?,?,?,?,?)', [req.body.c_pid, decoded.id, req.body.c_comment, req.body.image, Date.now(), req.body.c_id], (_err, reqer) => {
+      console.log(_err)
+      res.send(reqer)
+    })
+  }
 })
 
 module.exports = {

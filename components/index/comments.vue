@@ -98,13 +98,19 @@
                   <span v-if="$auth.loggedIn" :class="{'mr-1 pointer':true,'color-main':c.liked != null && c.liked.includes($auth.user.m_id)}" @click="likeComment(c.c_id,i)"><i class="fas fa-laugh-squint " style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
                   <span v-else :class="{'mr-1 pointer':true}"><i class="fas fa-laugh-squint " style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
                   <!-- replay -->
-                  <span class="pointer"> <i class="fas fa-reply" style="font-size:15px;" /> replay</span>
+                  <span :class="{'pointer':true,'color-main':c.replaycount > 0}" @click="c.replay = !c.replay"> <i class="fas fa-reply" style="font-size:15px;" /> <span v-if="c.replaycount > 0">{{ c.replaycount }}</span> replay</span>
                 </div>
               </div>
             </div>
           </div>
           <div class="col-md-1 col-1 mt-3 pl-0">
             <i class="fas fa-ellipsis-h" />
+          </div>
+          <div class="col-md-2 col-2 pr-0" />
+          <div class="col-md-10 col-10 pl-0">
+            <div v-if="c.replay" class="">
+              <replay :cidget="c.c_id" :pidget="msg" />
+            </div>
           </div>
         </div>
       </div>
@@ -118,8 +124,12 @@
   </div>
 </template>
 <script>
+import replay from '~/components/index/replay'
 export default {
   name: 'Comments',
+  components: {
+    replay
+  },
   props: {
     // eslint-disable-next-line vue/require-default-prop
     msg: Number,
@@ -128,6 +138,7 @@ export default {
   },
   data () {
     return {
+      replayitem: 0,
       loadmore: false,
       comments: [],
       meme: false,
@@ -239,13 +250,14 @@ export default {
         .then((res) => {
           this.comments.unshift({
             c_id: res.data.insertId,
-            c_mid: this.$auth.user.m_name,
+            c_mid: this.$auth.user.m_id,
             c_comment: this.massage,
             c_image: this.image,
             m_id: this.$auth.user.m_name,
             m_name: this.$auth.user.m_name,
             m_image: this.$auth.user.m_image,
-            c_date: Date.now()
+            c_date: Date.now(),
+            replay: false
           })
           this.$emit('onCommentPost', this.index)
           this.massage = ''
