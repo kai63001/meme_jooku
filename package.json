@@ -37,8 +37,10 @@
     "vue-infinite-loading": "^2.4.5",
     "vue-js-modal": "^2.0.0-rc.3",
     "vue-masonry": "^0.11.8",
+    "vue-radial-progress": "^0.3.1",
     "vue-stack-grid": "^1.2.1",
-    "vue-waterfall-easy": "^2.4.4"
+    "vue-waterfall-easy": "^2.4.4",
+    "vue2-circle-progress": "^1.2.3"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^2.0.0",

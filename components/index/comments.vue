@@ -6,13 +6,69 @@
           <div class="col-md-11 col-11">
             <div class="row">
               <div class="col-md-2 col-3">
-                <div class="pl-2">
-                  <img
-                    v-lazy-load
-                    :data-src="$auth.user.m_image"
-                    class="rounded-circle image-avatar"
-                    alt=""
+                <div class="">
+                  <nuxt-link
+                    :to="`/u/${$auth.user.m_username}`"
+                    class="position:relative"
                   >
+                    <svg viewBox="-5 0 40 40" class="circular-chart">
+                      <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stop-color="#00bbf9" />
+                          <stop offset="100%" stop-color="#615dfa" />
+                        </linearGradient>
+                        <pattern
+                          :id="`img_comment_${i}`"
+                          x="0%"
+                          y="0%"
+                          height="100%"
+                          width="100%"
+                          viewBox="0 0 40 40"
+                        >
+                          <image
+                            :xlink:href="$auth.user.m_image"
+                            width="100%"
+                            height="100%"
+                          />
+                        </pattern>
+                      </defs>
+                      <path
+                        stroke="url(#gradient)"
+                        class="circle"
+                        stroke-dasharray="30, 100"
+                        d="M18 2.0845
+      a 15.9155 15.9155 0 0 1 0 31.831
+      a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="13"
+                        width="100%"
+                        height="100%"
+                        :fill="`url(#img_comment_${i})`"
+                      />
+                      <circle
+                        cx="29"
+                        cy="29"
+                        r="6.5"
+                        stroke="white"
+                        stroke-width="1.5"
+                        width="100%"
+                        height="100%"
+                        fill="#212121"
+                      />
+                      <text
+                        x="29"
+                        y="29"
+                        fill="white"
+                        font-size="8"
+                        text-anchor="middle"
+                        dy=".3em"
+                      >5</text>
+
+                    </svg>
+                  </nuxt-link>
                 </div>
               </div>
               <div class="col-md-10 col-9 pl-0">
@@ -72,16 +128,69 @@
         <div v-for="(c, i) in comments" :key="i" class="row mt-2">
           <div class="col-md-11 col-11">
             <div class="row">
-              <div class="col-md-2 col-3">
-                <div class="pl-2">
-                  <img
-                    v-lazy-load
-                    :data-src="c.m_image"
-                    class="rounded-circle image-avatar"
-                    width="100%"
-                    alt=""
-                  >
-                </div>
+              <div class="col-md-2 col-3" style="width:60%">
+                <nuxt-link
+                  :to="`/u/${c.m_username}`"
+                  class="position:relative"
+                >
+                  <svg viewBox="-5 0 40 40" class="circular-chart">
+                    <defs>
+                      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#00bbf9" />
+                        <stop offset="100%" stop-color="#615dfa" />
+                      </linearGradient>
+                      <pattern
+                        :id="`img_comment_${i}`"
+                        x="0%"
+                        y="0%"
+                        height="100%"
+                        width="100%"
+                        viewBox="0 0 40 40"
+                      >
+                        <image
+                          :xlink:href="c.m_image"
+                          width="100%"
+                          height="100%"
+                        />
+                      </pattern>
+                    </defs>
+                    <path
+                      stroke="url(#gradient)"
+                      class="circle"
+                      stroke-dasharray="64, 100"
+                      d="M18 2.0845
+      a 15.9155 15.9155 0 0 1 0 31.831
+      a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <circle
+                      cx="18"
+                      cy="18"
+                      r="13"
+                      width="100%"
+                      height="100%"
+                      :fill="`url(#img_comment_${i})`"
+                    />
+                    <circle
+                      cx="29"
+                      cy="29"
+                      r="6.5"
+                      stroke="white"
+                      stroke-width="1.5"
+                      width="100%"
+                      height="100%"
+                      fill="#212121"
+                    />
+                    <text
+                      x="29"
+                      y="29"
+                      fill="white"
+                      font-size="8"
+                      text-anchor="middle"
+                      dy=".3em"
+                    >5</text>
+
+                  </svg>
+                </nuxt-link>
               </div>
               <div class="col-md-10 col-9 pl-0">
                 <div class="comment">
@@ -273,7 +382,7 @@ export default {
 <style scoped>
 .addPhoto {
   color: white;
-  background: #8338ec;
+  background: #615dfa;
   padding: 5px 10px;
   border-radius: 4px;
 }

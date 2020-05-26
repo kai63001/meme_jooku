@@ -200,7 +200,7 @@ export default {
 <style scoped>
 .addPhoto {
   color: white;
-  background: #8338ec;
+  background: #615dfa;
   padding: 5px 10px;
   border-radius: 4px;
 }

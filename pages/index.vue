@@ -7,9 +7,9 @@
         <leftmenu />
         <div class="col-md-6 main-stream bg-bg">
           <div class="main">
-            <h1 class="float-left pt-2">
+            <!-- <h1 class="float-left pt-2">
               Main Stream
-            </h1>
+            </h1> -->
             <div class="clearfix" />
           </div>
           <div class="row">
@@ -205,7 +205,7 @@ export default {
 }
 .btn-follow {
   border: 0px;
-  background: #8338ec;
+  background: #615dfa;
   color: white;
 }
 .pl-8 {
@@ -239,7 +239,7 @@ html,body {
 }
 
 .btn-newpost {
-  background: #8338ec;
+  background: #615dfa;
   color: white;
 }
 .img-radius {

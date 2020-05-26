@@ -12,23 +12,23 @@
 }
 html,
 body {
-    background: #f8f8f8 !important;
+  background: #f8f8f8 !important;
   font-family: "romeo", "Mitr", sans-serif !important;
 }
 .color-main {
-  color: #8338ec;
+  color: #615dfa;
 }
 .color-dark {
   color: #212121;
 }
-.dropdown-item{
-  border:0px !important;
+.dropdown-item {
+  border: 0px !important;
   outline: none !important;
 }
-.dropdown-item:focus{
-  background: #8338ec !important;
-  border:0px !important;
-  color:white !important;
+.dropdown-item:focus {
+  background: #615dfa !important;
+  border: 0px !important;
+  color: white !important;
 }
 
 .color-muted {
@@ -42,11 +42,11 @@ body {
   color: white;
 }
 .bg-main {
-  background: #8338ec;
+  background: #615dfa;
   color: white;
 }
 .image-avatar {
-  width: 100%;
+  max-width: 100%;
 }
 .color-dark-2 {
   color: #212121 !important;
@@ -55,19 +55,72 @@ body {
 .color-dark-3 {
   color: #7d7d82 !important;
 }
-@media only screen and (width: 1920px) {
-  .image-avatar {
-    width: 70% !important;
-    margin-left: 15px !important;
+.circular-chart {
+  margin: 0 auto;
+  display: block;
+  max-width: 70%;
+  position: absolute;
+}
+
+.circle {
+  margin: 0 auto;
+  /* stroke: #4cc790; */
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
   }
 }
-@media only screen and (width: 1600px) {
+textarea:hover,
+input:hover,
+textarea:active,
+input:active,
+textarea:focus,
+input:focus,
+button:focus,
+button:active,
+button:hover,
+label:focus,
+.btn:active,
+.btn.active
+{
+    outline:0px !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+}
+@media only screen and (min-width: 1920px) {
   .image-avatar {
-    width: 70% !important;
+    max-width: 70% !important;
+    margin-left: 15px !important;
+  }
+  .circular-chart {
+    max-width: 55%;
+    top: -5% !important;
+    left: 26%;
+  }
+}
+@media only screen and (min-width: 1600px) {
+  .circular-chart {
+    max-width: 53%;
+    top: -5%;
+    left: 30%;
+  }
+  .circular-chart-comment {
+    max-width: 47%;
+    top: -1.5%;
+    left: 36%;
+  }
+  .image-avatar {
+    max-width: 70% !important;
     margin-left: 15px !important;
   }
 }
 select {
-    display: block
- }
+  display: block;
+}
 </style>

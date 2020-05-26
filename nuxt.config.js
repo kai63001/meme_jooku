@@ -65,7 +65,8 @@ module.exports = {
   */
   plugins: [
     { src: '~/plugins/infinitloading', ssr: false },
-    '~/plugins/moment.js'
+    '~/plugins/moment.js',
+    { src: '~/plugins/probar.js' }
     // { src: '~/plugins/grid', ssr: false },
     // { src: '~/plugins/modal' }
 
@@ -82,10 +83,10 @@ module.exports = {
   */
   modules: [
     '@nuxtjs/device',
-    ['@nuxtjs/component-cache', {
-      max: 10000,
-      maxAge: 1000 * 60 * 60
-    }],
+    // ['@nuxtjs/component-cache', {
+    //   max: 10000,
+    //   maxAge: 1000 * 60 * 60
+    // }],
     '@nuxtjs/toast',
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
