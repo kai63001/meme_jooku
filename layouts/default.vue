@@ -22,6 +22,20 @@ body {
 body {
   overflow-x: hidden;
 }
+.tags-input input {
+  border:none !important
+}
+.tags-input-badge{
+  display: inline-block;
+  background: #8338ec !important;
+  color:white !important;
+  padding:5px 10px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  text-align: center;
+  margin-right: 6px;
+  border-radius:25px
+}
 .color-main {
   color: #635dff;
 }

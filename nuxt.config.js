@@ -65,7 +65,8 @@ module.exports = {
   */
   plugins: [
     { src: '~/plugins/infinitloading', ssr: false },
-    '~/plugins/moment.js'
+    '~/plugins/moment.js',
+    { src: '~/plugins/probar.js', ssr: false }
     // { src: '~/plugins/grid', ssr: false },
     // { src: '~/plugins/modal' }
 

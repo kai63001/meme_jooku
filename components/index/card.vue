@@ -7,14 +7,28 @@
             <form @submit.prevent="addPost">
               <textarea
                 id=""
+                ref="textarea"
                 v-model="post.title"
                 class="form-control input-modal p-0 bg-white pt-1"
                 name=""
                 cols="10"
                 placeholder="Give your post title or description (drag drop image here)"
                 rows="3"
+                @keyup="heightoFtextArea(this)"
                 @drop.prevent="onFileChange"
                 @dragover.prevent
+              />
+              <tags-input
+                v-model="tags"
+                element-id="tags"
+                add-tags-on-space="true"
+                add-tags-on-comma="true"
+                :existing-tags="[
+                  { key: 'web-development', value: 'Web Development' },
+                  { key: 'php', value: 'PHP' },
+                  { key: 'javascript', value: 'JavaScript' },
+                ]"
+                :typeahead="true"
               />
               <div v-if="post.imageUrl" class="w-50 mt-2">
                 <input
@@ -355,6 +369,7 @@ export default {
         image: '',
         imageUrl: false
       },
+      tags: [],
       memeData: [],
       page: 1
     }
@@ -370,6 +385,12 @@ export default {
     })
   },
   methods: {
+    heightoFtextArea (o) {
+      this.$refs.textarea.style.height = '1px'
+      // this.$refs.textarea.style.height = '1px'
+      this.$refs.textarea.style.height = (25 + this.$refs.textarea.scrollHeight) + 'px'
+    },
+
     async deletePost (id, index) {
       await this.$axios
         .delete(`/delete/post/${id}`)
