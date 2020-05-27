@@ -27,7 +27,7 @@ body {
 }
 .tags-input-badge{
   display: inline-block;
-  background: #8338ec !important;
+  background: #8338ec;
   color:white !important;
   padding:5px 10px;
   margin-bottom: 5px;
@@ -37,7 +37,19 @@ body {
   border-radius:25px
 }
 .color-main {
-  color: #635dff;
+  color: #8338ec;
+}
+.bg-main-2 {
+  background: #ff006e !important;
+}
+.toasted .primary.error, .toasted.toasted-primary.error{
+  background: #ff006e !important;
+}
+.toasted .primary.error, .toasted.toasted-primary.success{
+  background: #06d6a0 !important;
+}
+.color-main-2 {
+  color: #ff006e !important;
 }
 .color-dark {
   color: #212121;
@@ -47,7 +59,7 @@ body {
   outline: none !important;
 }
 .dropdown-item:focus {
-  background: #635dff !important;
+  background: #8338ec !important;
   border: 0px !important;
   color: white !important;
 }
@@ -63,7 +75,7 @@ body {
   color: white !important;
 }
 .bg-main {
-  background: #635dff;
+  background: #8338ec;
   color: white;
 }
 .image-avatar {

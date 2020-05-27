@@ -133,13 +133,13 @@ app.post('/post', requireJWTAuth, (req, res) => {
 
   if (req.body.image !== '' && req.body.imageUrl === false) {
     cloudinary.uploader.upload(req.body.image, function (_error, result) {
-      con.query('INSERT INTO posts (p_detail,p_image,p_lang,p_hashtag,p_date,p_mid) VALUES (?,?,?,?,?,?)', [des, result.url.replace(/http:\/\//g, 'https://'), req.body.lang, hashtag, Date.now(), decoded.id], (_err, reqer) => {
+      con.query('INSERT INTO posts (p_detail,p_image,p_lang,p_hashtag,p_date,p_mid,p_tags) VALUES (?,?,?,?,?,?,?)', [des, result.url.replace(/http:\/\//g, 'https://'), req.body.lang, hashtag, Date.now(), decoded.id, req.body.tags], (_err, reqer) => {
         if (_err) { throw _err }
         res.send({ reqer, title: des, hashtag })
       })
     })
   } else {
-    con.query('INSERT INTO posts (p_detail,p_image,p_lang,p_hashtag,p_date,p_mid) VALUES (?,?,?,?,?,?)', [des, req.body.image, req.body.lang, hashtag, Date.now(), decoded.id], (_err, reqer) => {
+    con.query('INSERT INTO posts (p_detail,p_image,p_lang,p_hashtag,p_date,p_mid,p_tags) VALUES (?,?,?,?,?,?,?)', [des, req.body.image, req.body.lang, hashtag, Date.now(), decoded.id, req.body.tags], (_err, reqer) => {
       if (_err) { throw _err }
       res.send({ reqer, title: des, hashtag })
     })
@@ -165,7 +165,7 @@ app.get('/main', (req, res) => {
     if (err) {
       res.send('/404')
     } else {
-      con.query('SELECT posts.p_id,posts.p_detail,posts.p_image,posts.p_lang,posts.p_hashtag,posts.p_date,m.m_id,m.m_name,m.m_image,m.m_username,COUNT(likes.l_id) as likes,GROUP_CONCAT(m2.m_id separator \',\') as liked,false as commentsShow, (SELECT COUNT(*) FROM comment WHERE c_pid = posts.p_id) as comments FROM posts ' +
+      con.query('SELECT posts.p_id,posts.p_detail,posts.p_image,posts.p_lang,posts.p_hashtag,posts.p_date,posts.p_tags,m.m_id,m.m_name,m.m_image,m.m_username,COUNT(likes.l_id) as likes,GROUP_CONCAT(m2.m_id separator \',\') as liked,false as commentsShow, (SELECT COUNT(*) FROM comment WHERE c_pid = posts.p_id) as comments FROM posts ' +
       'LEFT JOIN likes on likes.l_pid = posts.p_id ' +
       'LEFT JOIN members m2 on likes.l_mid = m2.m_id ' +
       'INNER JOIN members m on posts.p_mid = m.m_id GROUP BY posts.p_id ' +

@@ -19,10 +19,11 @@
                 @dragover.prevent
               />
               <tags-input
+                v-if="tagOpen"
                 v-model="tags"
                 element-id="tags"
-                add-tags-on-space="true"
-                add-tags-on-comma="true"
+                :add-tags-on-space="true"
+                :add-tags-on-comma="true"
                 :existing-tags="[
                   { key: 'web-development', value: 'Web Development' },
                   { key: 'php', value: 'PHP' },
@@ -63,6 +64,15 @@
                 @click="post.imageUrl = !post.imageUrl"
               >
                 <i class="fas fa-link color-main" />
+              </div>
+              <div
+                class="my-3 float-left ml-3 pointeronly"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="Add tags"
+                @click="tagOpen = !tagOpen"
+              >
+                <i class="fas fa-tags color-main" />
               </div>
               <div class="mt-1 float-right">
                 <button
@@ -255,15 +265,20 @@
           >
           <div
             v-if="
-              meme.p_image.substr(
-                meme.p_image.length - 3,
-                meme.p_image.length
-              ) == 'gif'
+              meme.p_image.indexOf('.gif') >= 0
             "
             class="gifed"
           >
             GIF
           </div>
+        </div>
+        <div v-if="meme.p_tags.length > 0" class="mt-4 pl-4 pr-4">
+          <div v-for="(tagser,it) in meme.p_tags.split(',')" :key="it">
+            <nuxt-link to="" class="text-decoration-none">
+              <span :class="{'float-left tags-input-badge':true,'bg-main-2':it == 1}">{{ tagser }}</span>
+            </nuxt-link>
+          </div>
+          <div class="clearfix" />
         </div>
         <div class="p-3">
           <div class="row">
@@ -272,20 +287,20 @@
                 v-show="
                   meme.liked != null && meme.liked.includes($auth.user.m_id)
                 "
-                class="text-center pt-2 pb-2 pointer color-main"
+                class="text-center pt-2 pb-2 pointer click-haha color-main-2"
                 @click="unlike(meme.p_id, i)"
               >
-                <i class="mr-1 fas fa-laugh-squint " style="font-size:17px;" />
+                <i class="mr-1 fas fa-laugh-squint haha" style="font-size:17px;" />
                 <span style="matgin-top:-12px">{{ meme.likes }}</span>
               </div>
               <div
                 v-show="
                   meme.liked == null || !meme.liked.includes($auth.user.m_id)
                 "
-                class="text-center pt-2 pb-2 pointer color-dark-3"
+                class="text-center pt-2 pb-2 pointer click-haha color-dark-3"
                 @click="like(meme.p_id, i)"
               >
-                <i class="mr-1 fas fa-laugh-squint" style="font-size:17px" />
+                <i class="mr-1 fas fa-laugh-squint haha" style="font-size:17px" />
                 <span v-if="meme.likes > 0" style="matgin-top:-12px">{{
                   meme.likes
                 }}</span>
@@ -367,9 +382,11 @@ export default {
         title: '',
         lang: 'English',
         image: '',
-        imageUrl: false
+        imageUrl: false,
+        tags: []
       },
       tags: [],
+      tagOpen: false,
       memeData: [],
       page: 1
     }
@@ -386,7 +403,8 @@ export default {
   },
   methods: {
     heightoFtextArea (o) {
-      this.$refs.textarea.style.height = '1px'
+      // console.log(this.post.tags[0].value)
+      this.$refs.textarea.style.height = '25px'
       // this.$refs.textarea.style.height = '1px'
       this.$refs.textarea.style.height = (25 + this.$refs.textarea.scrollHeight) + 'px'
     },
@@ -550,6 +568,11 @@ export default {
         this.posting = false
       } else {
         this.$toast.show('Posting...').goAway(1500)
+        const valtag = []
+        for (let i = 0; i < this.tags.length; i++) {
+          valtag.push(this.tags[i].value)
+        }
+        this.post.tags = valtag.join(',')
         this.$axios
           .post('/post', this.post, {
             onUploadProgress: (progressEvent) => {
@@ -567,6 +590,7 @@ export default {
               p_detail: res.data.title,
               p_image: this.post.image,
               p_lang: this.post.lang,
+              p_tags: this.post.tags,
               p_hashtag: res.data.hashtag,
               p_date: Date.now(),
               m_id: this.$auth.user.m_id,
@@ -581,6 +605,9 @@ export default {
             this.post.title = ''
             this.post.lang = 'English'
             this.post.image = ''
+            this.post.tags = []
+            this.tags = []
+            this.tagOpen = false
             this.post.imageUrl = false
             this.onlyText = false
             this.posting = false
@@ -696,5 +723,18 @@ div.dropdown-item:focus {
   opacity: 0;
   cursor: pointer;
 }
-
+.click-haha .haha {
+  animation: funny 1s ease-out forwards;
+}
+@keyframes funny {
+  0% {
+    transform: rotate(40deg);
+  }
+  30% {
+    transform: rotate(-40deg);
+  }
+  60% {
+    transform: rotate(40deg);
+  }
+}
 </style>

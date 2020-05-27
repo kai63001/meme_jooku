@@ -10,7 +10,7 @@
         <div class="row h-100 w-100">
           <div class="col-sm-12 text-center mx-auto my-auto">
             <div class="mt-center">
-              <h1 class="color-main mb-4">
+              <h1 class="color-main-2 mb-4">
                 Sign in to Meme
               </h1>
               <nuxt-link to="/">
@@ -55,7 +55,7 @@
                       required
                     >
                   </div>
-                  <nuxt-link to="/" class="color-main">
+                  <nuxt-link to="/" class="color-main-2">
                     Forget your password?
                   </nuxt-link>
                   <br>
@@ -187,7 +187,7 @@ export default {
   margin-left: 10%;
 }
 .btn-signin {
-  background: #4249C1 !important;
+  background: #ff006e !important;
   color: white;
   box-shadow: none;
   padding: 15px 70px;

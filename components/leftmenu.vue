@@ -204,7 +204,7 @@ export default {
   font-size: 16px;
   padding-left: 4%;
   /* border-left: 3px solid #635dff; */
-  background: #635dff;
+  background: #ff006e;
   color:white !important;
   margin-left: 5%;
 }

@@ -123,7 +123,7 @@
         </form>
       </div>
       <div v-else class="text-center">
-        <nuxt-link class="pl-1 color-main pr-1" to="/auth/login">
+        <nuxt-link class="pl-1 color-main-2 pr-1" to="/auth/login">
           Sign in
         </nuxt-link>
         or
@@ -218,10 +218,10 @@
                 <div v-if="c.c_image != ''">
                   <img v-lazy-load :data-src="c.c_image" class="rounded mt-2" width="100%" :alt="c.c_comment">
                 </div>
-                <div class="mt-1 ml-1 color-dark-3">
+                <div class="mt-1 ml-1 color-dark-3 ">
                   <!-- like comment -->
-                  <span v-if="$auth.loggedIn" :class="{'mr-1 pointer':true,'color-main':c.liked != null && c.liked.includes($auth.user.m_id)}" @click="likeComment(c.c_id,i)"><i class="fas fa-laugh-squint " style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
-                  <span v-else :class="{'mr-1 pointer':true}"><i class="fas fa-laugh-squint " style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
+                  <span v-if="$auth.loggedIn" :class="{'mr-1 pointer':true,'color-main-2 click-haha':c.liked != null && c.liked.includes($auth.user.m_id)}" @click="likeComment(c.c_id,i)"><i class="fas fa-laugh-squint haha" style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
+                  <span v-else :class="{'mr-1 pointer':true}"><i class="fas fa-laugh-squint haha" style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
                   <!-- replay -->
                   <span :class="{'pointer':true,'color-main':c.replaycount > 0}" @click="c.replay = !c.replay"> <i class="fas fa-reply" style="font-size:15px;" /> <span v-if="c.replaycount > 0">{{ c.replaycount }}</span> replay</span>
                 </div>
@@ -464,5 +464,19 @@ export default {
 .no-btn{
   background: none;
   border:none;
+}
+.click-haha .haha {
+  animation: funny 1s ease-out forwards;
+}
+@keyframes funny {
+  0% {
+    transform: rotate(40deg);
+  }
+  30% {
+    transform: rotate(-40deg);
+  }
+  60% {
+    transform: rotate(40deg);
+  }
 }
 </style>
