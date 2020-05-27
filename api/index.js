@@ -31,7 +31,7 @@ app.get('/', requireJWTAuth, (req, res) => {
 app.get('/user', requireJWTAuth, (req, res) => {
   const usertoken = req.headers.authorization
   const decoded = jwt.decode(usertoken, SECRET)
-  con.query('SELECT m_id,m_username,m_name,m_email,m_image FROM members WHERE m_id = ?', [decoded.id], (_err, reqer) => {
+  con.query('SELECT m_id,m_username,m_name,m_email,m_image,m_cover FROM members WHERE m_id = ?', [decoded.id], (_err, reqer) => {
     res.send({ user: reqer[0] })
   })
 })

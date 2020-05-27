@@ -5,7 +5,7 @@
       <br><br>
       <div class="row">
         <leftmenu />
-        <div class="col-md-6 main-stream">
+        <div class="col-md-6 pl-md-0 pr-md-5 main-stream">
           <div class="main pt-4">
             <!-- <h1 class="float-left pt-2">
               Main Stream
@@ -19,60 +19,8 @@
           </div>
           <br>
         </div>
-        <div v-if="$device.isDesktop" class="pl-0 col-md-3 d-none d-lg-block pr-3 ">
-          <br>
-          <br>
-          <div class="pr-4">
-            <h4>Trends for you</h4>
-            <div class="bg-white rounded">
-              <!-- <div class="pl-2 pt-3 border-bottom">
-                <h4>Trends for you</h4>
-              </div> -->
-              <nuxt-link v-for="(h,index) in hashtag" :key="index" to="" class="text-decoration-none text-dark">
-                <div class="pl-3 pr-3 pt-2 pb-2 border-bottom">
-                  <div class="color-main">
-                    {{ h.h_name }}
-                  </div>
-                  <span>{{ h.h_count+1 }} Hashtags</span>
-                </div>
-              </nuxt-link>
-              <nuxt-link to="" class="color-main text-decoration-none">
-                <div class="p-3">
-                  Show More
-                </div>
-              </nuxt-link>
-            </div>
-            <br>
-          </div>
-          <div class="pr-4 sticky-top ">
-            <div class="bg-white rounded">
-              <div class="pl-2 pt-3 border-bottom">
-                <h4>Best Playlist</h4>
-              </div>
-              <nuxt-link to="" class="text-decoration-none text-dark">
-                <div class="p-3  border-bottom">
-                  <div class="color-main">
-                    #555
-                  </div>
-                  <span>21K Hashtags</span>
-                </div>
-              </nuxt-link>
-            </div>
-            <div class="text-muted mt-2 p-2">
-              <nuxt-link to="" class="text-muted">
-                Term
-              </nuxt-link>
-              <nuxt-link to="" class="text-muted">
-                Privacy Policy
-              </nuxt-link>
-              <nuxt-link to="" class="text-muted">
-                DMCA
-              </nuxt-link>
-              <br>
-              © 2020 Jooku, Inc.
-            </div>
-          </div>
-        </div>
+        <!-- rightmenu -->
+        <rightmenu />
       </div>
     </div>
   </div>
@@ -81,17 +29,16 @@
 <script>
 import card from '~/components/index/card'
 import leftmenu from '~/components/leftmenu'
+import rightmenu from '~/components/rightmenu'
 import navbar from '~/components/navbar'
 export default {
   name: 'Index',
   scrollToTop: true,
   components: {
-    card, leftmenu, navbar
+    card, leftmenu, navbar, rightmenu
   },
   data () {
     return {
-
-      hashtag: []
     }
   },
   async mounted () {
