@@ -15,10 +15,10 @@
                       <defs>
                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                           <stop offset="0%" stop-color="#00bbf9" />
-                          <stop offset="100%" stop-color="#615dfa" />
+                          <stop offset="100%" stop-color="#635dff" />
                         </linearGradient>
                         <pattern
-                          :id="`img_comment_${i}`"
+                          :id="`img_auth`"
                           x="0%"
                           y="0%"
                           height="100%"
@@ -33,6 +33,14 @@
                         </pattern>
                       </defs>
                       <path
+                        stroke="#ddd"
+                        class="circle2"
+                        stroke-dasharray="100, 100"
+                        d="M18 2.0845
+      a 15.9155 15.9155 0 0 1 0 31.831
+      a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                      <path
                         stroke="url(#gradient)"
                         class="circle"
                         stroke-dasharray="30, 100"
@@ -46,7 +54,7 @@
                         r="13"
                         width="100%"
                         height="100%"
-                        :fill="`url(#img_comment_${i})`"
+                        :fill="`url(#img_auth)`"
                       />
                       <circle
                         cx="29"
@@ -137,7 +145,7 @@
                     <defs>
                       <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                         <stop offset="0%" stop-color="#00bbf9" />
-                        <stop offset="100%" stop-color="#615dfa" />
+                        <stop offset="100%" stop-color="#635dff" />
                       </linearGradient>
                       <pattern
                         :id="`img_comment_${i}`"
@@ -154,6 +162,14 @@
                         />
                       </pattern>
                     </defs>
+                    <path
+                      stroke="#ddd"
+                      class="circle2"
+                      stroke-dasharray="100, 100"
+                      d="M18 2.0845
+      a 15.9155 15.9155 0 0 1 0 31.831
+      a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
                     <path
                       stroke="url(#gradient)"
                       class="circle"
@@ -382,7 +398,7 @@ export default {
 <style scoped>
 .addPhoto {
   color: white;
-  background: #615dfa;
+  background: #635dff;
   padding: 5px 10px;
   border-radius: 4px;
 }

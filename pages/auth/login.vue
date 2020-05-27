@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div class="row">
-      <div class="col-md-8 ml-4 bg-left">
+  <div class="h-100">
+    <div class="row h-100">
+      <div class="col-md-8 ml-4 bg-left h-100">
         <div class="p-3">
           <nuxt-link to="/" class="text-muted">
             <i class="fas fa-arrow-left" /> Back to Home
@@ -187,7 +187,7 @@ export default {
   margin-left: 10%;
 }
 .btn-signin {
-  background: #615dfa !important;
+  background: #4249C1 !important;
   color: white;
   box-shadow: none;
   padding: 15px 70px;
@@ -196,7 +196,7 @@ export default {
   outline: none;
 }
 .btn-signin:focus {
-  background: #0488bd !important;
+  background: #482c95 !important;
   color: white;
   box-shadow: none;
   padding: 15px 70px;
@@ -255,7 +255,7 @@ export default {
   overflow-x: hidden;
   padding-top: 20px;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("/bannerright.jpg");
+    url("https://i.pinimg.com/originals/03/0e/3f/030e3f42a21755fea30fc3f4ded04375.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -273,7 +273,7 @@ export default {
 .bg-left {
   height: 100%;
   background: white;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 .col-md-8 {
   padding-bottom: 100% !important;

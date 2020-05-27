@@ -14,9 +14,16 @@ html,
 body {
   background: #f8f8f8 !important;
   font-family: "romeo", "Mitr", sans-serif !important;
+  margin: auto;
+  padding: 0;
+  height: 100%;
+  /* overflow-x: hidden; */
+}
+body {
+  overflow-x: hidden;
 }
 .color-main {
-  color: #615dfa;
+  color: #635dff;
 }
 .color-dark {
   color: #212121;
@@ -26,7 +33,7 @@ body {
   outline: none !important;
 }
 .dropdown-item:focus {
-  background: #615dfa !important;
+  background: #635dff !important;
   border: 0px !important;
   color: white !important;
 }
@@ -39,10 +46,10 @@ body {
   width: 100%;
 }
 .color-white {
-  color: white;
+  color: white !important;
 }
 .bg-main {
-  background: #615dfa;
+  background: #635dff;
   color: white;
 }
 .image-avatar {
@@ -61,7 +68,13 @@ body {
   max-width: 70%;
   position: absolute;
 }
-
+.circle2 {
+  margin: 0 auto;
+  /* stroke: #4cc790; */
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
 .circle {
   margin: 0 auto;
   /* stroke: #4cc790; */
@@ -76,6 +89,7 @@ body {
     stroke-dasharray: 0 100;
   }
 }
+
 textarea:hover,
 input:hover,
 textarea:active,
@@ -100,14 +114,14 @@ label:focus,
   }
   .circular-chart {
     max-width: 55%;
-    top: -5% !important;
-    left: 26%;
+    /* top: -5% !important; */
+    /* left: 26%; */
   }
 }
 @media only screen and (min-width: 1600px) {
   .circular-chart {
     max-width: 53%;
-    top: -5%;
+    /* top: -5%; */
     left: 30%;
   }
   .circular-chart-comment {

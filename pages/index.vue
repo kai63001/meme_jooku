@@ -1,12 +1,12 @@
 <template>
   <div class="">
-    <div class="social-feed h-100 bg-bg">
+    <div class="social-feed h-100">
       <navbar />
       <br><br>
       <div class="row">
         <leftmenu />
-        <div class="col-md-6 main-stream bg-bg">
-          <div class="main">
+        <div class="col-md-6 main-stream">
+          <div class="main pt-4">
             <!-- <h1 class="float-left pt-2">
               Main Stream
             </h1> -->
@@ -19,7 +19,7 @@
           </div>
           <br>
         </div>
-        <div v-if="$device.isDesktop" class="col-md-3 d-none d-lg-block pr-3 bg-bg ">
+        <div v-if="$device.isDesktop" class="pl-0 col-md-3 d-none d-lg-block pr-3 ">
           <br>
           <br>
           <div class="pr-4">
@@ -205,7 +205,7 @@ export default {
 }
 .btn-follow {
   border: 0px;
-  background: #615dfa;
+  background: #635dff;
   color: white;
 }
 .pl-8 {
@@ -226,9 +226,6 @@ export default {
 .feed-card {
   background: white;
 }
-.bg-bg {
-  background: #f8f8f8 !important;
-}
 html,body {
   background: #f8f8f8 !important;
 }
@@ -239,7 +236,7 @@ html,body {
 }
 
 .btn-newpost {
-  background: #615dfa;
+  background: #635dff;
   color: white;
 }
 .img-radius {

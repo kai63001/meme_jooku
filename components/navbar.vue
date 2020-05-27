@@ -136,6 +136,5 @@ export default {
 }
 .bg-white {
   background: white;
-  border-bottom: 1px solid #dddd;
 }
 </style>

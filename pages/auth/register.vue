@@ -273,7 +273,7 @@ export default {
 }
 .btn-next {
   margin-top: 5%;
-  background: #615dfa !important;
+  background: #635dff !important;
   color: white;
   box-shadow: none;
   padding: 10px 30px;
@@ -282,7 +282,7 @@ export default {
   outline: none;
 }
 .btn-signin {
-  background: #615dfa !important;
+  background: #635dff !important;
   color: white;
   box-shadow: none;
   padding: 15px 70px;
@@ -291,7 +291,7 @@ export default {
   outline: none;
 }
 .btn-signin:focus {
-  background: #0488bd !important;
+  background: #482c95 !important;
   color: white;
   box-shadow: none;
   padding: 15px 70px;
@@ -350,7 +350,7 @@ export default {
   overflow-x: hidden;
   padding-top: 20px;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://images.unsplash.com/photo-1495110823793-aa4ed8127d6e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjE0MjB9");
+    url("https://i.pinimg.com/originals/d8/22/b9/d822b94012d78d2a2eb5e448e8f2d5a5.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

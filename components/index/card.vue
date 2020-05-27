@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100">
+  <div class="w-100" style="padding-left:-25px">
     <div v-if="$auth.loggedIn" class="col-md-12 item">
       <div class="card-feed bg-white shadow-sm rounded">
         <div class="p-3">
@@ -8,7 +8,7 @@
               <textarea
                 id=""
                 v-model="post.title"
-                class="form-control input-modal p-0 bg-white w-100"
+                class="form-control input-modal p-0 bg-white pt-1"
                 name=""
                 cols="10"
                 placeholder="Give your post title or description (drag drop image here)"
@@ -119,6 +119,14 @@
                         />
                       </pattern>
                     </defs>
+                    <path
+                      stroke="#ddd"
+                      class="circle2"
+                      stroke-dasharray="100, 100"
+                      d="M18 2.0845
+      a 15.9155 15.9155 0 0 1 0 31.831
+      a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
                     <path
                       stroke="url(#gradient)"
                       class="circle"
