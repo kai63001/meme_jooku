@@ -94,6 +94,12 @@ body {
   max-width: 70%;
   position: absolute;
 }
+.circular-chart-2 {
+  margin: 0 auto;
+  display: block;
+  max-width: 50%;
+  position: absolute;
+}
 .circle2 {
   margin: 0 auto;
   /* stroke: #4cc790; */

@@ -1,6 +1,6 @@
 <template>
   <div class="w-100" style="padding-left:-25px">
-    <div v-if="$auth.loggedIn" class="col-md-12 item">
+    <div v-if="$auth.loggedIn && !userid" class="col-md-12 item">
       <div class="card-feed bg-white shadow-sm rounded">
         <div class="p-3">
           <div class="col-md-12 col-12 ">
@@ -374,6 +374,10 @@ export default {
   components: {
     comments
   },
+  props: {
+    // eslint-disable-next-line vue/require-default-prop
+    userid: Number
+  },
   data () {
     return {
       onlyText: false,
@@ -494,8 +498,12 @@ export default {
       console.log(this.memeData[index])
     },
     async loadMoreTours ($state) {
+      let dataurl = `/main?page=${this.page}`
+      if (this.userid) {
+        dataurl = `/main?userid=${this.userid}&page=${this.page}`
+      }
       await this.$axios
-        .get(`/main?page=${this.page}`)
+        .get(dataurl)
         .then((res) => {
           this.memeData.push.apply(this.memeData, res.data.resquert)
           if (res.data.resquert.length > 0) {

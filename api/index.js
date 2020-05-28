@@ -164,12 +164,30 @@ app.get('/main', (req, res) => {
   con.query('SELECT p_id FROM posts', function (err, resquerter) {
     if (err) {
       res.send('/404')
-    } else {
+    } else if (req.query.userid) {
       con.query('SELECT posts.p_id,posts.p_detail,posts.p_image,posts.p_lang,posts.p_hashtag,posts.p_date,posts.p_tags,m.m_id,m.m_name,m.m_image,m.m_username,COUNT(likes.l_id) as likes,GROUP_CONCAT(m2.m_id separator \',\') as liked,false as commentsShow, (SELECT COUNT(*) FROM comment WHERE c_pid = posts.p_id) as comments FROM posts ' +
       'LEFT JOIN likes on likes.l_pid = posts.p_id ' +
       'LEFT JOIN members m2 on likes.l_mid = m2.m_id ' +
-      'INNER JOIN members m on posts.p_mid = m.m_id GROUP BY posts.p_id ' +
-      'ORDER BY p_date DESC limit ? , ? ', [start, perpage], function (err, resquert) {
+      'INNER JOIN members m on posts.p_mid = m.m_id ' +
+      'WHERE p_mid = ? GROUP BY posts.p_id ' +
+      'ORDER BY p_date DESC limit ? , ? ', [req.query.userid, start, perpage], function (err, resquert) {
+        if (err) {
+          res.send(err)
+        } else {
+          const lastPage = Math.ceil(resquerter.length / perpage)
+          res.tags = resquert
+          res.lastPage = lastPage
+          res.count = resquerter.length
+          res.send({ resquert })
+        }
+      })
+    } else {
+      con.query('SELECT posts.p_id,posts.p_detail,posts.p_image,posts.p_lang,posts.p_hashtag,posts.p_date,posts.p_tags,m.m_id,m.m_name,m.m_image,m.m_username,COUNT(likes.l_id) as likes,GROUP_CONCAT(m2.m_id separator \',\') as liked,false as commentsShow, (SELECT COUNT(*) FROM comment WHERE c_pid = posts.p_id) as comments FROM posts ' +
+        'LEFT JOIN likes on likes.l_pid = posts.p_id ' +
+        'LEFT JOIN members m2 on likes.l_mid = m2.m_id ' +
+        'INNER JOIN members m on posts.p_mid = m.m_id ' +
+        'GROUP BY posts.p_id ' +
+        'ORDER BY p_date DESC limit ? , ? ', [start, perpage], function (err, resquert) {
         if (err) {
           res.send(err)
         } else {
@@ -326,6 +344,17 @@ app.post('/comment/replay', requireJWTAuth, (req, res) => {
       res.send(reqer)
     })
   }
+})
+
+app.get('/profile/:m_username', (req, res) => {
+  con.query('SELECT * FROM members WHERE m_username = ? LIMIT 1', [req.params.m_username], (_err, reqer) => {
+    if (_err) {
+      console.log(_err)
+      res.send(_err)
+    } else {
+      res.send(reqer)
+    }
+  })
 })
 
 module.exports = {

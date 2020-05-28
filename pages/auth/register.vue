@@ -178,6 +178,7 @@ export default {
           $('#exampleModalCenter').modal('hide')
         } else if (response === 'usernamesame') {
           this.$toast.error('This username is already used').goAway(1500)
+          this.register.registerUsername = this.register.registerUsername + '_jooku' + (String(Date.now())).substr(0, 2)
           // eslint-disable-next-line no-undef
           $('#exampleModalCenter').modal('show')
         } else {

@@ -130,8 +130,8 @@ export default {
 <style scoped>
 .memecount {
   position: absolute;
-  bottom: 2%;
-  left: 10%;
+  top: 4%;
+  right: 10%;
   font-size: 12px;
   color: white;
   opacity: 0;
