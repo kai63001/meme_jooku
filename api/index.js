@@ -128,6 +128,32 @@ app.post('/post', requireJWTAuth, (req, res) => {
   } else {
     hashtag = ''
   }
+  if (req.body.tags.length > 0) {
+    console.log(req.body.tags)
+    const tags = req.body.tags.split(',')
+    tags.forEach((h) => {
+      con.query('SELECT * FROM tags WHERE t_name = ?', [h], (_err, reqer1) => {
+        if (_err) {
+          console.log(_err)
+        }
+        if (reqer1.length === 0) {
+          con.query('INSERT INTO tags (t_name) VALUES (?)', [h], (_err, reqer2) => {
+            if (_err) {
+              console.log(_err)
+            }
+            console.log('insert tags')
+          })
+        } else {
+          con.query('UPDATE tags SET t_count = ? WHERE t_id = ?', [reqer1[0].t_count + 1, reqer1[0].t_id], (_err, reqer3) => {
+            if (_err) {
+              console.log(_err)
+            }
+            console.log('UPDATE tags')
+          })
+        }
+      })
+    })
+  }
   //   console.log(hashtag)
   //   console.log(des)
 
@@ -265,7 +291,7 @@ app.get('/comment/:p_id', (req, res) => {
     if (err) {
       res.send('/404')
     } else {
-      con.query('SELECT c_id,c_mid,c_comment,c_image,m_id,m_name,m_image,c_date,COUNT(lc.lc_id) as likes ,GROUP_CONCAT(lc.lc_mid separator \',\') as liked,false as replay,(SELECT COUNT(*) FROM replay WHERE r_cid = comment.c_id) as replaycount FROM comment LEFT JOIN members m on m.m_id = comment.c_mid LEFT JOIN like_comment lc on lc.lc_cid = comment.c_id WHERE c_pid = ? GROUP BY comment.c_id ORDER BY c_date DESC limit ? , ?', [req.params.p_id, start, perpage], (_err, reqer) => {
+      con.query('SELECT c_id,c_mid,c_comment,c_image,m_id,m_name,m_username,m_image,c_date,COUNT(lc.lc_id) as likes ,GROUP_CONCAT(lc.lc_mid separator \',\') as liked,false as replay,(SELECT COUNT(*) FROM replay WHERE r_cid = comment.c_id) as replaycount FROM comment LEFT JOIN members m on m.m_id = comment.c_mid LEFT JOIN like_comment lc on lc.lc_cid = comment.c_id WHERE c_pid = ? GROUP BY comment.c_id ORDER BY c_date DESC limit ? , ?', [req.params.p_id, start, perpage], (_err, reqer) => {
         if (_err) {
           res.send(_err)
         } else {

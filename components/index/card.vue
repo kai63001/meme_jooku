@@ -22,30 +22,18 @@
                 v-if="tagOpen"
                 v-model="tags"
                 element-id="tags"
-                :add-tags-on-space="true"
+                :add-tags-on-space="false"
                 :add-tags-on-comma="true"
-                :existing-tags="[
-                  { key: 'web-development', value: 'Web Development' },
-                  { key: 'php', value: 'PHP' },
-                  { key: 'javascript', value: 'JavaScript' },
-                ]"
                 :typeahead="true"
               />
-              <div v-if="post.imageUrl" class="w-50 mt-2">
-                <input
-                  v-model="post.image"
-                  type="url"
-                  class="form-control input-modal"
-                  required
-                  placeholder="image url"
-                >
-              </div>
+
               <div
                 class="my-3 float-left"
                 data-toggle="tooltip"
                 data-placement="bottom"
                 title="Attach a picture"
                 style="width:20px;cursor: pointer;z-index:2"
+                @click="showInputFile"
               >
                 <i class="fas fa-image font-image color-main" />
                 <input
@@ -92,12 +80,22 @@
                 </button>
               </div>
               <div class="clearfix" />
-
+              <div v-if="post.imageUrl" class="tags-input-root position-relative">
+                <div class="tags-input-wrapper-default tags-input">
+                  <input
+                    v-model="post.image"
+                    type="url"
+                    class="form-control input-modal p-0 bg-white pt-1 pl-1 w-100"
+                    required
+                    placeholder="Image url"
+                  >
+                </div>
+              </div>
               <div
                 v-if="
-                  post.image != '' ||
-                    (isUrl(post.image) && post.imageUrl == true)
+                  (isUrl(post.image))
                 "
+                class="position-relative"
               >
                 <img
                   v-lazy-load
@@ -106,6 +104,11 @@
                   class="rounded"
                   alt=""
                 >
+                <div style="position:absolute;top:3%;right:3%">
+                  <div class="bg-dark rounded-circle pl-3 pr-3 pt-2 pb-2 pointer" @click="post.image = ''">
+                    <i class="fas fa-times color-white" />
+                  </div>
+                </div>
               </div>
             </form>
           </div>
@@ -199,10 +202,12 @@
                 <br>
                 <span
                   class="text-muted"
-                >{{ $moment(parseInt(meme.p_date)) }} ·</span>
+                >{{ $moment(parseInt(meme.p_date)) }}
+                <!-- ·</span>
                 <nuxt-link to="" class="text-decoration-none color-main">
                   Follow
-                </nuxt-link>
+                </nuxt-link> -->
+                </span>
               </div>
             </div>
           </div>
@@ -240,7 +245,7 @@
           </div>
           <div class="clearfix" />
         </div>
-        <div class="content-meme pl-4 pr-4 pb-3">
+        <div class="content-meme pt-2 pl-4 pr-4 pb-3">
           <div v-if="meme.p_detail.length > 0">
             <span style="white-space: pre-line;">{{ meme.p_detail }}</span>
           </div>
@@ -406,6 +411,10 @@ export default {
     })
   },
   methods: {
+    showInputFile () {
+      if (this.post.imageUrl === true) { this.$refs.file.click() }
+      this.post.imageUrl = false
+    },
     heightoFtextArea (o) {
       // console.log(this.post.tags[0].value)
       this.$refs.textarea.style.height = '25px'
@@ -518,8 +527,9 @@ export default {
         })
     },
     isUrl (s) {
-      const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/
-      return regexp.test(s)
+      // const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/
+      if (s.includes('data:') || (s.includes('http') && (s.indexOf('.jpg') > 0 || s.indexOf('.jpeg') > 0 || s.indexOf('.png') > 0 || s.indexOf('.gif') > 0))) { return true }
+      return false
     },
     onFileChange (e) {
       const files = e.target.files || e.dataTransfer.files

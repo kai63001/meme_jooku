@@ -2,7 +2,14 @@
   <div v-if="$device.isDesktop" class="col-md-3 d-none d-lg-block">
     <div class="bg-left">
       <div v-if="$auth.loggedIn" class="position-relative">
-        <img src="https://i.pinimg.com/originals/bd/42/77/bd427729187cc5fd7830430d9749e345.gif" style="z-index:-1;object-fit: cover;" width="100%" height="110px" alt="">
+        <img
+          v-lazy-load
+          :data-src="$auth.user.m_cover"
+          style="z-index:-1;object-fit: cover;"
+          width="100%"
+          height="110px"
+          alt=""
+        >
         <svg viewBox="0 0 36 36" class="circular-chart profile">
           <circle
             cx="18"
@@ -90,7 +97,7 @@
             {{ $auth.user.m_name }}
           </h5>
           <div class="color-dark-2 font-smaill">
-            @{{ $auth.user.m_username }}
+            @{{ $auth.user.m_username.toUpperCase() }}
           </div>
         </div>
       </div>

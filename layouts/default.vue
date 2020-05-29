@@ -78,6 +78,15 @@ body {
   background: #8338ec;
   color: white;
 }
+.bg-warning {
+  background: #ffbe0b;
+}
+.bg-primary {
+  background: #3a86ff;
+}
+.bg-orange {
+  background: #fb5607;
+}
 .image-avatar {
   max-width: 100%;
 }
