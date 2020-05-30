@@ -373,7 +373,7 @@ app.post('/comment/replay', requireJWTAuth, (req, res) => {
 })
 
 app.get('/profile/:m_username', (req, res) => {
-  con.query('SELECT * FROM members WHERE m_username = ? LIMIT 1', [req.params.m_username], (_err, reqer) => {
+  con.query('SELECT m_id,m_name,m_username,m_image,m_cover,m_exp,GROUP_CONCAT(f.f_mid separator \',\') as follower,(SELECT COUNT(f_id) FROM follow WHERE follow.f_mid = members.m_id) as following,(SELECT COUNT(p_id) FROM posts WHERE p_mid = members.m_id) AS memes FROM members LEFT JOIN follow f on f.f_fmid = members.m_id WHERE m_username = ? GROUP BY members.m_id LIMIT 1', [req.params.m_username], (_err, reqer) => {
     if (_err) {
       console.log(_err)
       res.send(_err)

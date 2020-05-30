@@ -28,20 +28,20 @@
                   <div class="row">
                     <div class="col-md-4 col-4">
                       <div class="border-right" />
-                      <h4>930</h4>
+                      <h4>{{ user.memes }}</h4>
                       <div class="postleft">
-                        POSTS
+                        MEMES
                       </div>
                     </div>
                     <div class="col-md-4 col-4">
                       <div class="border-right" />
-                      <h4>1,504</h4>
+                      <h4>{{ user.follower.split(',').length }}</h4>
                       <div class="postleft">
                         FOLLOWERS
                       </div>
                     </div>
                     <div class="col-md-4 col-4">
-                      <h4>15</h4>
+                      <h4>{{ user.following }}</h4>
                       <div class="postleft">
                         FOLLOWING
                       </div>
@@ -153,12 +153,16 @@
                     <button class="btn bg-warning color-white">
                       <i class="fas fa-flag" />
                     </button>
-                    <button
-                      v-if="user.m_id != $auth.user.m_id"
-                      class="btn bg-main-2 color-white"
+                    <span
+                      v-if="!$auth.loggedIn || (user.m_id != $auth.user.m_id)"
                     >
-                      Follow
-                    </button>
+                      <button v-if="$auth.loggedIn && user.follower.split(',').includes($auth.user.m_id.toString())" class="btn bg-main-2 color-white">
+                        Unfollow
+                      </button>
+                      <button v-else class="btn bg-main-2 color-white">
+                        Follow
+                      </button>
+                    </span>
                     <button v-else class="btn bg-main-2 color-white">
                       Set up profile
                     </button>
@@ -190,7 +194,7 @@
                 Leave a comment
               </h5>
               <div class="pt-2">
-                <leavecomment />
+                <!-- <leavecomment /> -->
               </div>
             </div>
           </div>
@@ -206,21 +210,28 @@ import navbar from '~/components/navbar'
 import leftmenu from '~/components/leftmenu'
 import card from '~/components/index/card'
 // import profile from '~/components/user/profile'
-import leavecomment from '~/components/user/leavecomment'
+// import leavecomment from '~/components/user/leavecomment'
 export default {
   name: 'Profile',
   components: {
     navbar,
     leftmenu,
-    card,
-    leavecomment
+    card
+    // leavecomment
   },
-  async asyncData ({ params, $axios, req }) {
+  async asyncData ({ error, params, $axios, req, redirect }) {
+    // console.log(error)
+    // if (error.statusCode === 5000) {
+    //   redirect('/404')
+    // }
     const url = req
       ? 'https://' + req.headers.host + '/u/' + params.username
       : ''
     const data = await $axios.$get(`/profile/${params.username}`)
-    return { user: data[0], url }
+    if (!data[0]) {
+      error({ statusCode: 404, message: 'Post not found' })
+    }
+    return { user: data[0], follower_a: data[0].follower.split(','), url }
   },
   head () {
     return {

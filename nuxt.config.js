@@ -49,7 +49,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#06d6a0', height: '3px' },
+  loading: { color: '#8338ec', height: '3px' },
   render: {
     static: {
       maxAge: 1000 * 60 * 60 * 24 * 7

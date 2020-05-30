@@ -220,7 +220,8 @@
                 </div>
                 <div class="mt-1 ml-1 color-dark-3 ">
                   <!-- like comment -->
-                  <span v-if="$auth.loggedIn" :class="{'mr-1 pointer':true,'color-main-2 click-haha':c.liked != null && c.liked.includes($auth.user.m_id)}" @click="likeComment(c.c_id,i)"><i class="fas fa-laugh-squint haha" style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
+                  <!-- {{ c.liked }} -->
+                  <span v-if="$auth.loggedIn" :class="{'mr-1 pointer':true,'color-main-2 click-haha':c.liked != null && c.liked.split(',').includes($auth.user.m_id.toString())}" @click="likeComment(c.c_id,i)"><i class="fas fa-laugh-squint haha" style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
                   <span v-else :class="{'mr-1 pointer':true}"><i class="fas fa-laugh-squint haha" style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
                   <!-- replay -->
                   <span :class="{'pointer':true,'color-main':c.replaycount > 0}" @click="c.replay = !c.replay"> <i class="fas fa-reply" style="font-size:15px;" /> <span v-if="c.replaycount > 0">{{ c.replaycount }}</span> replay</span>
@@ -286,20 +287,20 @@ export default {
   methods: {
     async likeComment (id, index) {
       // ตรวจสอบว่า กด like แล้ว
-      if (this.comments[index].liked != null && this.comments[index].liked.includes(this.$auth.user.m_id)) {
+      if (this.comments[index].liked != null && this.comments[index].liked.split(',').includes(this.$auth.user.m_id.toString())) {
         await this.$axios.delete(`/unlike/${id}?s=comment&pid=${this.msg}`).then((res) => {
           console.log(res.data)
         }).catch((e) => { console.log(e) })
-        let liked = this.comments[index].liked
+        let liked = this.comments[index].liked.split(',')
         console.log('liked :' + liked)
         // eslint-disable-next-line camelcase
-        const index_dele = liked.indexOf(this.$auth.user.m_id)
+        const index_dele = liked.indexOf(this.$auth.user.m_id.toString())
         // eslint-disable-next-line camelcase
         console.log('index_dele :' + index_dele)
         // eslint-disable-next-line camelcase
         if (index_dele > -1) {
           if (liked.includes(',')) {
-            liked = liked.split(',')
+            // liked = liked.split(',')
             liked.splice(index_dele, 1)
           } else {
             liked = ''
@@ -314,10 +315,11 @@ export default {
         }).catch((e) => { console.log(e) })
         this.$set(this.comments[index], 'likes', (this.comments[index].likes || 0) + 1)
         if (this.comments[index].liked == null) {
-          this.$set(this.comments[index], 'liked', [this.$auth.user.m_id])
+          this.$set(this.comments[index], 'liked', this.$auth.user.m_id.toString())
         } else {
           this.$set(this.comments[index], 'liked', this.comments[index].liked + ',' + this.$auth.user.m_id)
         }
+        console.log(this.comments[index].liked)
       }
     },
     onFileChange (e) {
