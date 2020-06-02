@@ -43,7 +43,7 @@
             <div
               class="dropdown-menu mr-3 dropdown-menu-right width-dropdown"
             >
-              <button class="dropdown-item pt-2 pb-2" type="button">
+              <nuxt-link :to="`/u/${$auth.user.m_username}`" class="dropdown-item pt-2 pb-2" type="button">
                 <img
                   v-lazy-load
                   width="15%"
@@ -52,7 +52,7 @@
                   :alt="$auth.user.name"
                 >
                 <span class="pl-2">Guest</span>
-              </button>
+              </nuxt-link>
               <hr class="p-0 m-2">
               <button class="dropdown-item pt-2 pb-2" type="button">
                 <img

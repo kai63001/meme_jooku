@@ -17,9 +17,9 @@
               width="100%"
               alt=""
             >
-            <div class="righttopmenu">
+            <!-- <div class="righttopmenu">
               .
-            </div>
+            </div> -->
             <div class="pl-5 pr-5 pt-5 pb-3">
               <div class="row">
                 <div

@@ -10,97 +10,101 @@
           height="110px"
           alt=""
         >
-        <svg viewBox="0 0 36 36" class="circular-chart profile">
-          <circle
-            cx="18"
-            cy="18"
-            r="18"
-            width="100%"
-            height="100%"
-            fill="white"
-          />
-          <g>
-            <svg viewBox="-2 -2 40 40">
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#00bbf9" />
-                  <stop offset="100%" stop-color="#635dff" />
-                </linearGradient>
-                <pattern
-                  :id="`img_auth`"
-                  x="0%"
-                  y="0%"
-                  height="100%"
-                  width="100%"
-                  viewBox="0 0 40 40"
-                >
-                  <image
-                    :xlink:href="$auth.user.m_image"
-                    width="100%"
+        <nuxt-link :to="`/u/${$auth.user.m_username}`">
+          <svg viewBox="0 0 36 36" class="circular-chart profile">
+            <circle
+              cx="18"
+              cy="18"
+              r="18"
+              width="100%"
+              height="100%"
+              fill="white"
+            />
+            <g>
+              <svg viewBox="-2 -2 40 40">
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#00bbf9" />
+                    <stop offset="100%" stop-color="#635dff" />
+                  </linearGradient>
+                  <pattern
+                    :id="`img_auth`"
+                    x="0%"
+                    y="0%"
                     height="100%"
-                  />
-                </pattern>
-              </defs>
+                    width="100%"
+                    viewBox="0 0 40 40"
+                  >
+                    <image
+                      :xlink:href="$auth.user.m_image"
+                      width="100%"
+                      height="100%"
+                    />
+                  </pattern>
+                </defs>
 
-              <path
-                stroke="#ddd"
-                class="circle2"
-                stroke-dasharray="100, 100"
-                d="M18 2.0845
+                <path
+                  stroke="#ddd"
+                  class="circle2"
+                  stroke-dasharray="100, 100"
+                  d="M18 2.0845
       a 15.9155 15.9155 0 0 1 0 31.831
       a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-              <path
-                stroke="url(#gradient)"
-                class="circle"
-                stroke-dasharray="30, 100"
-                d="M18 2.0845
+                />
+                <path
+                  stroke="url(#gradient)"
+                  class="circle"
+                  stroke-dasharray="30, 100"
+                  d="M18 2.0845
       a 15.9155 15.9155 0 0 1 0 31.831
       a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-              <circle
-                cx="18"
-                cy="18"
-                r="13"
-                width="100%"
-                height="100%"
-                :fill="`url(#img_auth)`"
-              />
-              <circle
-                cx="29"
-                cy="29"
-                r="6.5"
-                stroke="white"
-                stroke-width="1.5"
-                width="100%"
-                height="100%"
-                fill="#212121"
-              />
-              <text
-                x="29"
-                y="29"
-                fill="white"
-                font-size="8"
-                text-anchor="middle"
-                dy=".3em"
-              >5</text>
+                />
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="13"
+                  width="100%"
+                  height="100%"
+                  :fill="`url(#img_auth)`"
+                />
+                <circle
+                  cx="29"
+                  cy="29"
+                  r="6.5"
+                  stroke="white"
+                  stroke-width="1.5"
+                  width="100%"
+                  height="100%"
+                  fill="#212121"
+                />
+                <text
+                  x="29"
+                  y="29"
+                  fill="white"
+                  font-size="8"
+                  text-anchor="middle"
+                  dy=".3em"
+                >5</text>
 
-            </svg>
-          </g>
-        </svg>
+              </svg>
+            </g>
+          </svg>
+        </nuxt-link>
       </div>
       <br>
       <br>
-      <div v-if="$auth.loggedIn">
-        <div class="text-center mt-1 text-capitalize">
-          <h5>
-            {{ $auth.user.m_name }}
-          </h5>
-          <div class="color-dark-2 font-smaill">
-            @{{ $auth.user.m_username.toUpperCase() }}
+      <nuxt-link :to="`/u/${$auth.user.m_username}`" class="text-decoration-none">
+        <div v-if="$auth.loggedIn">
+          <div class="text-center mt-1 text-capitalize color-main-2">
+            <h5>
+              {{ $auth.user.m_name }}
+            </h5>
+            <div class="color-dark-2 font-smaill">
+              @{{ $auth.user.m_username.toUpperCase() }}
+            </div>
           </div>
         </div>
-      </div>
+      </nuxt-link>
 
       <!-- <div class="pl-3 pr-3 pt-5">
         <nuxt-link to="/">
