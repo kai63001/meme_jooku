@@ -35,7 +35,7 @@
                     </div>
                     <div class="col-md-4 col-4">
                       <div class="border-right" />
-                      <h4>{{ user.follower.split(',').length }}</h4>
+                      <h4>{{ user.follower == null?'0':user.follower.split(',').length }}</h4>
                       <div class="postleft">
                         FOLLOWERS
                       </div>
@@ -156,10 +156,10 @@
                     <span
                       v-if="!$auth.loggedIn || (user.m_id != $auth.user.m_id)"
                     >
-                      <button v-if="$auth.loggedIn && user.follower.split(',').includes($auth.user.m_id.toString())" class="btn bg-main-2 color-white">
+                      <button v-if="$auth.loggedIn && user.follower != null && user.follower.split(',').includes($auth.user.m_id.toString())" class="btn bg-main-2 color-white" @click="unfollow">
                         Unfollow
                       </button>
-                      <button v-else class="btn bg-main-2 color-white">
+                      <button v-else class="btn bg-main-2 color-white" @click="follow">
                         Follow
                       </button>
                     </span>
@@ -231,7 +231,51 @@ export default {
     if (!data[0]) {
       error({ statusCode: 404, message: 'Post not found' })
     }
-    return { user: data[0], follower_a: data[0].follower.split(','), url }
+    return { user: data[0], url }
+  },
+  data () {
+    return {
+      user: []
+    }
+  },
+  methods: {
+    async unfollow () {
+      let follower = this.user.follower.split(',')
+      console.log(follower)
+      // eslint-disable-next-line camelcase
+      const follower_id = follower.indexOf(this.$auth.user.m_id.toString())
+      follower.splice(follower_id, 1)
+      console.log(follower_id)
+      follower = follower.join(',')
+      console.log(follower)
+      if (follower === '') {
+        follower = null
+      }
+      this.$set(this.user, 'follower', follower)
+      await this.$axios.get(`/follow/${this.user.m_id}`).then((res) => {
+        console.log(res.data)
+      })
+        .catch((e) => {
+          console.log(e)
+        })
+    },
+    async follow () {
+      let follower = this.user.follower == null ? [] : this.user.follower.split(',')
+      console.log(follower)
+      // eslint-disable-next-line camelcase
+      // const follower_id = follower.indexOf(this.$auth.user.m_id.toString())
+      follower.push(this.$auth.user.m_id.toString())
+      // console.log(follower_id)
+      // console.log(follower)
+      follower = follower.join(',')
+      this.$set(this.user, 'follower', follower)
+      await this.$axios.get(`/follow/${this.user.m_id}`).then((res) => {
+        console.log(res.data)
+      })
+        .catch((e) => {
+          console.log(e)
+        })
+    }
   },
   head () {
     return {

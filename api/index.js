@@ -383,6 +383,30 @@ app.get('/profile/:m_username', (req, res) => {
   })
 })
 
+app.get('/follow/:m_id', requireJWTAuth, (req, res) => {
+  const usertoken = req.headers.authorization
+  const decoded = jwt.decode(usertoken, SECRET)
+  con.query('SELECT * FROM follow WHERE f_mid = ? AND f_fmid = ?', [decoded.id, req.params.m_id], (err, reqer) => {
+    if (err) {
+      console.log(err)
+    } else if (reqer.length > 0) {
+      console.log('delete')
+      con.query('DELETE FROM follow WHERE f_mid = ? AND f_fmid = ?', [decoded.id, req.params.m_id], (err, reqer) => {
+        if (err) {
+          console.log(err)
+        }
+      })
+    } else {
+      console.log('success follow')
+      con.query('INSERT INTO follow (f_mid,f_fmid) VALUES (?,?)', [decoded.id, req.params.m_id], (err, reqer) => {
+        if (err) {
+          console.log(err)
+        }
+      })
+    }
+  })
+})
+
 module.exports = {
   path: '/api/',
   handler: app

@@ -290,7 +290,7 @@
             <div v-if="$auth.loggedIn" class="col-md-4 col-4">
               <div
                 v-show="
-                  meme.liked != null && meme.liked.split(',').includes($auth.user.m_id.toString())
+                  meme.liked != null && meme.liked.toString().split(',').includes($auth.user.m_id.toString())
                 "
                 class="text-center pt-2 pb-2 pointer click-haha color-main-2"
                 @click="unlike(meme.p_id, i)"
@@ -300,7 +300,7 @@
               </div>
               <div
                 v-show="
-                  meme.liked == null || !meme.liked.split(',').includes($auth.user.m_id.toString())
+                  meme.liked == null || !meme.liked.toString().split(',').includes($auth.user.m_id.toString())
                 "
                 class="text-center pt-2 pb-2 pointer click-haha color-dark-3"
                 @click="like(meme.p_id, i)"
@@ -442,7 +442,7 @@ export default {
     },
     async unlike (id, index) {
       // eslint-disable-next-line camelcase
-      let liked = this.memeData[index].liked.split(',')
+      let liked = this.memeData[index].liked.toString().split(',')
       console.log('liked :' + liked)
       // eslint-disable-next-line camelcase
       const index_dele = liked.indexOf(this.$auth.user.m_id.toString())

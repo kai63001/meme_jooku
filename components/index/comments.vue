@@ -221,7 +221,7 @@
                 <div class="mt-1 ml-1 color-dark-3 ">
                   <!-- like comment -->
                   <!-- {{ c.liked }} -->
-                  <span v-if="$auth.loggedIn" :class="{'mr-1 pointer':true,'color-main-2 click-haha':c.liked != null && c.liked.split(',').includes($auth.user.m_id.toString())}" @click="likeComment(c.c_id,i)"><i class="fas fa-laugh-squint haha" style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
+                  <span v-if="$auth.loggedIn" :class="{'mr-1 pointer':true,'color-main-2 click-haha':c.liked != null && c.liked.toString().split(',').includes($auth.user.m_id.toString())}" @click="likeComment(c.c_id,i)"><i class="fas fa-laugh-squint haha" style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
                   <span v-else :class="{'mr-1 pointer':true}"><i class="fas fa-laugh-squint haha" style="font-size:15px;" /><span v-if="c.likes > 0" class="ml-2">{{ c.likes }}</span></span>
                   <!-- replay -->
                   <span :class="{'pointer':true,'color-main':c.replaycount > 0}" @click="c.replay = !c.replay"> <i class="fas fa-reply" style="font-size:15px;" /> <span v-if="c.replaycount > 0">{{ c.replaycount }}</span> replay</span>
@@ -287,11 +287,11 @@ export default {
   methods: {
     async likeComment (id, index) {
       // ตรวจสอบว่า กด like แล้ว
-      if (this.comments[index].liked != null && this.comments[index].liked.split(',').includes(this.$auth.user.m_id.toString())) {
+      if (this.comments[index].liked != null && this.comments[index].liked.toString().split(',').includes(this.$auth.user.m_id.toString())) {
         await this.$axios.delete(`/unlike/${id}?s=comment&pid=${this.msg}`).then((res) => {
           console.log(res.data)
         }).catch((e) => { console.log(e) })
-        let liked = this.comments[index].liked.split(',')
+        let liked = this.comments[index].liked.toString().split(',')
         console.log('liked :' + liked)
         // eslint-disable-next-line camelcase
         const index_dele = liked.indexOf(this.$auth.user.m_id.toString())
