@@ -95,8 +95,8 @@ app.post('/register', (req, res) => {
 // my cloud storage api key
 cloudinary.config({
   cloud_name: 'dgoffpdxx',
-  api_key: '282999112639611',
-  api_secret: 'KhoVhcrnN9GbmHdgHpq_jEK4NPw'
+  api_key: '########',
+  api_secret: '#########'
 })
 // post in index
 app.post('/post', requireJWTAuth, (req, res) => {
